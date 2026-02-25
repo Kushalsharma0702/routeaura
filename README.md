@@ -1,4 +1,4 @@
-# Escapade Central 🌍✈️
+# RouteAura 🌍✈️
 
 A modern travel and tour management system built with React and TypeScript. This web application allows users to browse travel packages, manage bookings, and provides administrators with powerful tools to manage destinations, routes, and user bookings.
 
@@ -163,7 +163,7 @@ The application includes a basic authentication system with different access lev
 
 ## 🤝 Contributing
 
-This is an academic project developed for the Web Technologies course. If you'd like to suggest improvements:
+This is an academic project developed for the Web Technologies course at IILM University. If you'd like to suggest improvements:
 
 1. Fork the repository
 2. Create a feature branch (`git checkout -b feature/improvement`)
@@ -193,4 +193,4 @@ For any queries regarding this project, please reach out to any of the team memb
 
 ---
 
-**Made with ❤️ by the Team Aurocode**
+**Made with ❤️ by Team Aurocode**
