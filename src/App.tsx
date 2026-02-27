@@ -34,8 +34,25 @@ import BrowsePackages from "./pages/client/BrowsePackages";
 import MyBookings from "./pages/client/MyBookings";
 import ClientProfile from "./pages/client/ClientProfile";
 
-// Initialize React Query client with default options
-const queryClient = new QueryClient();
+/**
+ * Initialize React Query client with optimized caching configuration
+ * - Cache data for 5 minutes (staleTime)
+ * - Keep unused data in cache for 10 minutes (gcTime)
+ * - Retry failed requests twice
+ * - Refetch on window focus for fresh data
+ */
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      staleTime: 5 * 60 * 1000, // 5 minutes - data considered fresh
+      gcTime: 10 * 60 * 1000, // 10 minutes - garbage collection time
+      retry: 2, // Retry failed requests twice
+      refetchOnWindowFocus: true, // Refetch when user returns to tab
+      refetchOnReconnect: true, // Refetch when internet reconnects
+      refetchOnMount: true, // Refetch when component mounts
+    },
+  },
+});
 
 /**
  * ProtectedRoute Component
