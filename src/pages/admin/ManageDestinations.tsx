@@ -105,12 +105,12 @@ export default function ManageDestinations() {
                 <Calendar className="w-3.5 h-3.5" />
                 <span>Best: {dest.travelSeason}</span>
               </div>
-              <div className="flex flex-wrap gap-1">
+              <div className="flex flex-wrap gap-1.5">
                 {dest.attractions.slice(0, 3).map(a => (
-                  <span key={a} className="text-xs bg-accent/10 text-accent-foreground px-2 py-0.5 rounded-full">{a}</span>
+                  <span key={a} className="text-xs bg-primary/15 text-primary border border-primary/20 px-2.5 py-1 rounded-full font-medium">{a}</span>
                 ))}
                 {dest.attractions.length > 3 && (
-                  <span className="text-xs text-muted-foreground">+{dest.attractions.length - 3} more</span>
+                  <span className="text-xs text-muted-foreground font-medium">+{dest.attractions.length - 3} more</span>
                 )}
               </div>
             </div>
