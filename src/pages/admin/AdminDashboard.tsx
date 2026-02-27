@@ -44,11 +44,11 @@ export default function AdminDashboard() {
           <h3 className="text-base font-display font-semibold text-card-foreground mb-4">Monthly Bookings</h3>
           <ResponsiveContainer width="100%" height={280}>
             <LineChart data={monthlyBookingsData}>
-              <CartesianGrid strokeDasharray="3 3" stroke="hsl(220 14% 90%)" />
-              {!isMobile && <XAxis dataKey="month" tick={{ fontSize: 12 }} stroke="hsl(220 12% 50%)" />}
-              <YAxis tick={{ fontSize: 12 }} stroke="hsl(220 12% 50%)" width={30} />
-              <Tooltip contentStyle={{ borderRadius: '8px', border: '1px solid hsl(220 14% 90%)', fontSize: '12px' }} />
-              <Line type="monotone" dataKey="bookings" stroke="hsl(239 84% 67%)" strokeWidth={2.5} dot={{ fill: 'hsl(239 84% 67%)', r: 4 }} />
+              <CartesianGrid strokeDasharray="3 3" stroke="hsl(200 20% 85%)" />
+              {!isMobile && <XAxis dataKey="month" tick={{ fontSize: 12 }} stroke="hsl(200 15% 45%)" />}
+              <YAxis tick={{ fontSize: 12 }} stroke="hsl(200 15% 45%)" width={30} />
+              <Tooltip contentStyle={{ borderRadius: '8px', border: '1px solid hsl(200 20% 85%)', fontSize: '12px' }} />
+              <Line type="monotone" dataKey="bookings" stroke="hsl(180 50% 35%)" strokeWidth={2.5} dot={{ fill: 'hsl(180 50% 35%)', r: 4 }} />
             </LineChart>
           </ResponsiveContainer>
         </motion.div>

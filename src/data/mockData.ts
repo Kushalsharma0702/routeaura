@@ -166,9 +166,9 @@ export const travelPackages: TravelPackage[] = [
     description: 'Ride through the highest motorable roads, visit ancient monasteries, and witness Pangong Lake\'s magical colour changes.',
     price: 29999, duration: 9, availableSeats: 12, travelDate: '2026-07-05',
     images: [
-      'https://images.unsplash.com/photo-1626015365107-39ce44d3c17c?w=800',
-      'https://images.unsplash.com/photo-1589793907316-f94025b46850?w=800',
-      'https://images.unsplash.com/photo-1573053986637-a01ec5394bfa?w=800',
+      'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=800&q=80',
+      'https://images.unsplash.com/photo-1506197603052-3cc9c3a201bd?w=800&q=80',
+      'https://images.unsplash.com/photo-1433086966358-54859d0ed716?w=800&q=80',
     ],
     rating: 4.6, category: 'Adventure', tags: ['Adventure', 'Biking', 'Nature'], visible: true,
   },
@@ -218,7 +218,7 @@ export const destinations: Destination[] = [
   {
     id: 'dest-5', name: 'Ladakh', country: 'India',
     description: 'Land of high passes — stark mountains, ancient monasteries, and turquoise Pangong Lake.',
-    images: ['https://images.unsplash.com/photo-1626015365107-39ce44d3c17c?w=800', 'https://images.unsplash.com/photo-1589793907316-f94025b46850?w=800'],
+    images: ['https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=800&q=80', 'https://images.unsplash.com/photo-1506197603052-3cc9c3a201bd?w=800&q=80'],
     travelSeason: 'Jun - Sep', attractions: ['Pangong Lake', 'Nubra Valley', 'Thiksey Monastery', 'Khardung La'],
   },
 ];
@@ -295,10 +295,10 @@ export const monthlyBookingsData = [
  * Shows distribution of bookings by package category
  */
 export const destinationData = [
-  { name: 'Beach', value: 40, fill: 'hsl(239 84% 67%)' },
-  { name: 'Adventure', value: 25, fill: 'hsl(187 92% 53%)' },
-  { name: 'Cultural', value: 20, fill: 'hsl(152 60% 42%)' },
-  { name: 'Luxury', value: 15, fill: 'hsl(38 92% 50%)' },
+  { name: 'Beach', value: 40, fill: 'hsl(180 45% 60%)' },
+  { name: 'Adventure', value: 25, fill: 'hsl(180 50% 35%)' },
+  { name: 'Cultural', value: 20, fill: 'hsl(200 40% 50%)' },
+  { name: 'Luxury', value: 15, fill: 'hsl(30 45% 55%)' },
 ];
 
 // ==================== UTILITY FUNCTIONS ====================

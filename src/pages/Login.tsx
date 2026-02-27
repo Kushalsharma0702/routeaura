@@ -46,6 +46,15 @@ export default function Login() {
     <div className="min-h-screen flex">
       {/* Left Panel */}
       <div className="hidden lg:flex lg:w-1/2 gradient-hero relative overflow-hidden items-center justify-center p-12">
+        {/* Background Image */}
+        <div className="absolute inset-0">
+          <img 
+            src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?q=80&w=2000" 
+            alt="Paragliding over mountains" 
+            className="w-full h-full object-cover"
+          />
+          <div className="absolute inset-0 bg-gradient-to-br from-primary/80 via-primary/70 to-accent/80" />
+        </div>
         <div className="absolute inset-0 opacity-10">
           {[...Array(5)].map((_, i) => (
             <motion.div
