@@ -1,89 +1,71 @@
-import { useState } from 'react';
-import { bookings as initialBookings, Booking, formatINR } from '@/data/mockData';
-import { Button } from '@/components/ui/button';
-import StatusBadge from '@/components/StatusBadge';
-import { Check, X, Search } from 'lucide-react';
-import { Input } from '@/components/ui/input';
-import { motion } from 'framer-motion';
+import { useEffect, useState } from 'react';
+import { Search } from 'lucide-react';
 import { toast } from 'sonner';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import ConfirmDialog from '@/components/admin/ConfirmDialog';
+import BookingBadge from '@/components/booking/BookingBadge';
+import { EmptyState, ErrorState, Pager } from '@/components/QueryState';
+import { Skeleton } from '@/components/ui/skeleton';
+import { ApiError } from '@/lib/api/client';
+import type { Booking } from '@/lib/api/bookings';
+import { formatMinor } from '@/lib/format';
+import { useAdminBookings, useCancelBooking, useRetryRefund } from '@/hooks/useBookings';
+import { useDebounced } from '@/hooks/useDebounced';
+
+const ALL = 'all';
 
 export default function ManageBookings() {
-  const [allBookings, setAllBookings] = useState<Booking[]>(initialBookings);
+  const [status, setStatus] = useState(ALL);
   const [search, setSearch] = useState('');
-
-  const filtered = allBookings.filter(b =>
-    b.clientName.toLowerCase().includes(search.toLowerCase()) ||
-    b.packageName.toLowerCase().includes(search.toLowerCase())
-  );
-
-  const updateStatus = (id: string, status: 'approved' | 'rejected') => {
-    setAllBookings(prev => prev.map(b =>
-      b.id === id ? { ...b, status, paymentStatus: status === 'approved' ? 'paid' as const : 'refunded' as const } : b
-    ));
-    toast.success(`Booking ${status} successfully`);
-  };
+  const [page, setPage] = useState(1);
+  const q = useDebounced(search.trim());
+  useEffect(() => setPage(1), [status, q]);
+  const { data, isLoading, isError, refetch } = useAdminBookings({ status: status === ALL ? undefined : status, q: q || undefined, page });
+  const cancel = useCancelBooking();
+  const retry = useRetryRefund();
+  const [toCancel, setToCancel] = useState<Booking | null>(null);
+  const err = (e: unknown) => toast.error(e instanceof ApiError ? e.message : 'Something went wrong');
 
   return (
     <div className="space-y-6 pb-24 lg:pb-0">
-      <div>
-        <h1 className="text-2xl font-display font-bold text-foreground">Manage Bookings</h1>
-        <p className="text-sm text-muted-foreground mt-1">Approve or reject client booking requests</p>
+      <div><h1 className="text-2xl font-display font-bold text-foreground">Bookings</h1><p className="text-sm text-muted-foreground mt-1">{data ? `${data.total} booking${data.total === 1 ? '' : 's'}` : 'Loading…'}</p></div>
+      <div className="flex flex-col sm:flex-row gap-3">
+        <div className="relative flex-1 max-w-sm"><Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" /><Input aria-label="Search bookings" placeholder="Reference or guest name…" value={search} className="pl-9" onChange={e => setSearch(e.target.value)} /></div>
+        <Select value={status} onValueChange={setStatus}><SelectTrigger className="w-full sm:w-52" aria-label="Status"><SelectValue /></SelectTrigger>
+          <SelectContent><SelectItem value={ALL}>All statuses</SelectItem><SelectItem value="confirmed">Confirmed</SelectItem><SelectItem value="pending_payment">Awaiting payment</SelectItem><SelectItem value="cancelled">Cancelled</SelectItem><SelectItem value="expired">Expired</SelectItem></SelectContent></Select>
       </div>
-
-      <div className="relative max-w-sm">
-        <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-        <Input placeholder="Search bookings..." value={search} onChange={e => setSearch(e.target.value)} className="pl-9" />
-      </div>
-
-      <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}
-        className="bg-card rounded-xl border border-border/50 shadow-card overflow-hidden">
-        <div className="overflow-x-auto">
-          <table className="w-full">
-            <thead>
-              <tr className="border-b border-border/50">
-                <th className="text-left text-xs font-medium text-muted-foreground px-3 sm:px-6 py-3">Client</th>
-                <th className="text-left text-xs font-medium text-muted-foreground px-3 sm:px-6 py-3 hidden sm:table-cell">Package</th>
-                <th className="text-left text-xs font-medium text-muted-foreground px-3 sm:px-6 py-3 hidden lg:table-cell">Travelers</th>
-                <th className="text-left text-xs font-medium text-muted-foreground px-3 sm:px-6 py-3 hidden lg:table-cell">Date</th>
-                <th className="text-left text-xs font-medium text-muted-foreground px-3 sm:px-6 py-3">Amount</th>
-                <th className="text-left text-xs font-medium text-muted-foreground px-3 sm:px-6 py-3">Status</th>
-                <th className="text-left text-xs font-medium text-muted-foreground px-3 sm:px-6 py-3">Actions</th>
-              </tr>
-            </thead>
+      {isLoading && <div className="space-y-2" role="status" aria-label="Loading">{[0, 1, 2].map(i => <Skeleton key={i} className="h-14 rounded-lg" />)}</div>}
+      {isError && <ErrorState message="We couldn't load bookings." onRetry={() => refetch()} />}
+      {data?.items.length === 0 && <EmptyState title="No bookings found" hint={q || status !== ALL ? 'Try another filter.' : 'Bookings appear here as travelers book.'} />}
+      {data && data.items.length > 0 && (
+        <div className="bg-card rounded-xl border border-border/50 shadow-card overflow-x-auto">
+          <table className="w-full text-sm">
+            <thead><tr className="text-left text-xs text-muted-foreground border-b border-border/50"><th className="px-4 py-3">Reference</th><th className="px-4 py-3">Guest</th><th className="px-4 py-3">Hotel</th><th className="px-4 py-3">Dates</th><th className="px-4 py-3">Total</th><th className="px-4 py-3">Status</th><th className="px-4 py-3">Actions</th></tr></thead>
             <tbody>
-              {filtered.map(b => (
-                <motion.tr key={b.id} initial={{ opacity: 0 }} animate={{ opacity: 1 }}
-                  className="border-t border-border/30 hover:bg-muted/30 transition-colors">
-                  <td className="px-3 sm:px-6 py-3 sm:py-4">
-                    <p className="text-sm font-medium text-card-foreground truncate max-w-[100px] sm:max-w-none">{b.clientName}</p>
-                    <p className="text-xs text-muted-foreground sm:hidden truncate max-w-[100px]">{b.packageName}</p>
-                    <p className="text-xs text-muted-foreground hidden sm:block">{b.clientEmail}</p>
-                  </td>
-                  <td className="px-3 sm:px-6 py-3 sm:py-4 text-sm text-card-foreground hidden sm:table-cell">{b.packageName}</td>
-                  <td className="px-3 sm:px-6 py-3 sm:py-4 text-sm text-card-foreground hidden lg:table-cell">{b.travelers}</td>
-                  <td className="px-3 sm:px-6 py-3 sm:py-4 text-sm text-muted-foreground hidden lg:table-cell">{b.travelDate}</td>
-                  <td className="px-3 sm:px-6 py-3 sm:py-4 text-sm font-medium text-card-foreground whitespace-nowrap">{formatINR(b.totalAmount)}</td>
-                  <td className="px-3 sm:px-6 py-3 sm:py-4"><StatusBadge status={b.status} /></td>
-                  <td className="px-3 sm:px-6 py-3 sm:py-4">
-                    {b.status === 'pending' && (
-                      <div className="flex gap-1 sm:gap-2">
-                        <Button size="icon" variant="outline" className="h-7 w-7 sm:h-8 sm:w-auto sm:px-3 text-success hover:bg-success/10 gap-1"
-                          onClick={() => updateStatus(b.id, 'approved')}>
-                          <Check className="w-3 h-3" /> <span className="hidden sm:inline">Approve</span>
-                        </Button>
-                        <Button size="icon" variant="outline" className="h-7 w-7 sm:h-8 sm:w-auto sm:px-3 text-destructive hover:bg-destructive/10 gap-1"
-                          onClick={() => updateStatus(b.id, 'rejected')}>
-                          <X className="w-3 h-3" /> <span className="hidden sm:inline">Reject</span>
-                        </Button>
-                      </div>
-                    )}
-                  </td>
-                </motion.tr>
+              {data.items.map(b => (
+                <tr key={b.id} className="border-b border-border/30 last:border-0">
+                  <td className="px-4 py-3 font-medium">{b.reference}</td>
+                  <td className="px-4 py-3">{b.guest_name}<span className="block text-xs text-muted-foreground">{b.user_email}</span></td>
+                  <td className="px-4 py-3">{b.hotel_name}<span className="block text-xs text-muted-foreground">{b.room_type_name}</span></td>
+                  <td className="px-4 py-3 whitespace-nowrap">{b.check_in} → {b.check_out}</td>
+                  <td className="px-4 py-3">{formatMinor(b.total_minor, b.currency)}<span className="block text-xs text-muted-foreground capitalize">{b.payment_status.replace('_', ' ')}</span></td>
+                  <td className="px-4 py-3"><BookingBadge status={b.status} /></td>
+                  <td className="px-4 py-3"><div className="flex gap-2">
+                    {(b.status === 'confirmed' || b.status === 'pending_payment') && <Button size="sm" variant="outline" onClick={() => setToCancel(b)}>Cancel</Button>}
+                    {b.payment_status === 'refund_pending' && <Button size="sm" variant="outline" disabled={retry.isPending} onClick={() => retry.mutate(b.id, { onSuccess: () => toast.success('Refund processed'), onError: err })}>Retry refund</Button>}
+                  </div></td>
+                </tr>
               ))}
             </tbody>
           </table>
         </div>
-      </motion.div>
+      )}
+      {data && <Pager page={page} pageSize={data.page_size} total={data.total} onPage={setPage} />}
+      <ConfirmDialog open={!!toCancel} onOpenChange={o => !o && setToCancel(null)} title={`Cancel booking ${toCancel?.reference}?`} confirmLabel="Cancel booking"
+        description="Admin cancellations release the rooms and refund the traveler in full. The traveler is notified."
+        onConfirm={() => toCancel && cancel.mutate({ id: toCancel.id, admin: true, reason: 'Cancelled by an administrator' }, { onSuccess: () => { toast.success('Booking cancelled'); setToCancel(null); }, onError: err })} />
     </div>
   );
 }

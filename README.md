@@ -1,6 +1,6 @@
 # RouteAura 🌍✈️
 
-A modern travel and tour management system built with React and TypeScript. This web application allows users to browse travel packages, manage bookings, and provides administrators with powerful tools to manage destinations, routes, and user bookings.
+A modern travel and tour management system built with React and TypeScript. This web application allows users to get personalised recommendations and AI-generated itineraries, optimise routes, book hotels (development payment simulator only) and use an English/Hindi assistant. Administrators manage destinations, hotels, inventory and bookings. See `docs/IMPLEMENTATION_STATUS.md` for what is verified and what is not.
 
 ## 📚 Project Information
 

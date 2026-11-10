@@ -19,11 +19,11 @@ import {
   DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import {
-  Compass, LayoutDashboard, Package, BookOpen, Users, MapPin, Menu, X,
-  LogOut, User, ChevronDown, Globe, CalendarDays, Search, Bell, Route, Sparkles, Wand2, Plane,
+  Compass, LayoutDashboard, BookOpen, Users, MapPin, Menu, X, LogOut, User, ChevronDown, CalendarDays, Bell, Sparkles, Wand2, Plane, Building2, Bot,
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import MobileBottomNav from './MobileBottomNav';
+import NotificationBell from './NotificationBell';
 
 interface NavItem {
   label: string;
@@ -34,11 +34,10 @@ interface NavItem {
 // Navigation items for admin users
 const adminNav: NavItem[] = [
   { label: 'Dashboard', href: '/admin', icon: LayoutDashboard },
-  { label: 'Packages', href: '/admin/packages', icon: Package },
+  { label: 'Hotels', href: '/admin/hotels', icon: Building2 },
   { label: 'Bookings', href: '/admin/bookings', icon: BookOpen },
   { label: 'Users', href: '/admin/users', icon: Users },
   { label: 'Destinations', href: '/admin/destinations', icon: MapPin },
-  { label: 'Routes', href: '/admin/routes', icon: Route },
 ];
 
 // Navigation items for regular users
@@ -48,8 +47,10 @@ const clientNav: NavItem[] = [
   { label: 'Plan a Trip', href: '/dashboard/planner', icon: Wand2 },
   { label: 'My Trips', href: '/dashboard/itineraries', icon: Plane },
   { label: 'Destinations', href: '/dashboard/destinations', icon: MapPin },
-  { label: 'Browse Packages', href: '/dashboard/packages', icon: Globe },
+  { label: 'Hotels', href: '/dashboard/hotels', icon: Building2 },
   { label: 'My Bookings', href: '/dashboard/bookings', icon: CalendarDays },
+  { label: 'Assistant', href: '/dashboard/assistant', icon: Bot },
+  { label: 'Notifications', href: '/dashboard/notifications', icon: Bell },
   { label: 'Profile', href: '/dashboard/profile', icon: User },
 ];
 
@@ -130,19 +131,9 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                 </div>
                 <span className="text-base font-display font-bold text-foreground">RouteAura</span>
               </Link>
-              <div className="hidden sm:flex items-center gap-2 bg-muted rounded-lg px-3 py-2">
-                <Search className="w-4 h-4 text-muted-foreground" />
-                <input
-                  type="text" placeholder="Search..."
-                  className="bg-transparent border-none outline-none text-sm text-foreground placeholder:text-muted-foreground w-48"
-                />
-              </div>
             </div>
             <div className="flex items-center gap-2 sm:gap-3">
-              <Button variant="ghost" size="icon" className="relative w-9 h-9">
-                <Bell className="w-5 h-5 text-muted-foreground" />
-                <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-accent rounded-full" />
-              </Button>
+              {user?.role !== 'admin' && <NotificationBell />}
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <Button variant="ghost" className="gap-2 px-2 sm:px-3">

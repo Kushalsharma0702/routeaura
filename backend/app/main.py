@@ -1,6 +1,7 @@
 import logging
 import time
 import uuid
+from contextlib import asynccontextmanager
 
 from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
@@ -19,7 +20,21 @@ log = logging.getLogger("routeaura.http")
 def create_app() -> FastAPI:
     settings = get_settings()
     configure_logging()
+
+    @asynccontextmanager
+    async def lifespan(_: FastAPI):
+        stop = None
+        if settings.background_jobs_enabled:
+            from app.workers.scheduler import start_background
+
+            stop = start_background()
+        yield
+        if stop is not None:
+            stop.set()
+
     app = FastAPI(
+        lifespan=lifespan,
+        
         title="RouteAura API",
         version="0.1.0",
         docs_url="/docs" if settings.environment != "production" else None,

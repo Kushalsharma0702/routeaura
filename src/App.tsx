@@ -24,21 +24,23 @@ import DashboardLayout from "./components/layouts/DashboardLayout";
 
 // Admin Pages - Only accessible to admin users
 const AdminDashboard = lazy(() => import("./pages/admin/AdminDashboard"));
-const ManagePackages = lazy(() => import("./pages/admin/ManagePackages"));
 const ManageBookings = lazy(() => import("./pages/admin/ManageBookings"));
 const ManageUsers = lazy(() => import("./pages/admin/ManageUsers"));
 const ManageDestinations = lazy(() => import("./pages/admin/ManageDestinations"));
-const ManageRoutes = lazy(() => import("./pages/admin/ManageRoutes"));
 
 // Client Pages - Accessible to regular users
 const ClientDashboard = lazy(() => import("./pages/client/ClientDashboard"));
-const BrowsePackages = lazy(() => import("./pages/client/BrowsePackages"));
 const MyBookings = lazy(() => import("./pages/client/MyBookings"));
 const ClientProfile = lazy(() => import("./pages/client/ClientProfile"));
 const ManageAttractions = lazy(() => import("./pages/admin/ManageAttractions"));
 const Planner = lazy(() => import("./pages/client/Planner"));
 const Itineraries = lazy(() => import("./pages/client/Itineraries"));
 const ItineraryDetail = lazy(() => import("./pages/client/ItineraryDetail"));
+const Hotels = lazy(() => import("./pages/client/Hotels"));
+const HotelDetail = lazy(() => import("./pages/client/HotelDetail"));
+const Notifications = lazy(() => import("./pages/client/Notifications"));
+const Assistant = lazy(() => import("./pages/client/Assistant"));
+const ManageHotels = lazy(() => import("./pages/admin/ManageHotels"));
 const Recommendations = lazy(() => import("./pages/client/Recommendations"));
 const BrowseDestinations = lazy(() => import("./pages/client/BrowseDestinations"));
 const DestinationDetail = lazy(() => import("./pages/client/DestinationDetail"));
@@ -106,19 +108,21 @@ const AppRoutes = () => (
     
     {/* Admin Routes - Only accessible by admin users */}
     <Route path="/admin" element={<ProtectedRoute role="admin"><AdminDashboard /></ProtectedRoute>} />
-    <Route path="/admin/packages" element={<ProtectedRoute role="admin"><ManagePackages /></ProtectedRoute>} />
+    <Route path="/admin/hotels" element={<ProtectedRoute role="admin"><ManageHotels /></ProtectedRoute>} />
     <Route path="/admin/bookings" element={<ProtectedRoute role="admin"><ManageBookings /></ProtectedRoute>} />
     <Route path="/admin/users" element={<ProtectedRoute role="admin"><ManageUsers /></ProtectedRoute>} />
     <Route path="/admin/destinations" element={<ProtectedRoute role="admin"><ManageDestinations /></ProtectedRoute>} />
     <Route path="/admin/destinations/:id/attractions" element={<ProtectedRoute role="admin"><ManageAttractions /></ProtectedRoute>} />
-    <Route path="/admin/routes" element={<ProtectedRoute role="admin"><ManageRoutes /></ProtectedRoute>} />
 
     {/* Client Routes - Accessible by regular logged-in users */}
     <Route path="/dashboard" element={<ProtectedRoute role="client"><ClientDashboard /></ProtectedRoute>} />
-    <Route path="/dashboard/packages" element={<ProtectedRoute role="client"><BrowsePackages /></ProtectedRoute>} />
     <Route path="/dashboard/planner" element={<ProtectedRoute role="client"><Planner /></ProtectedRoute>} />
     <Route path="/dashboard/itineraries" element={<ProtectedRoute role="client"><Itineraries /></ProtectedRoute>} />
     <Route path="/dashboard/itineraries/:id" element={<ProtectedRoute role="client"><ItineraryDetail /></ProtectedRoute>} />
+    <Route path="/dashboard/hotels" element={<ProtectedRoute role="client"><Hotels /></ProtectedRoute>} />
+    <Route path="/dashboard/hotels/:ref" element={<ProtectedRoute role="client"><HotelDetail /></ProtectedRoute>} />
+    <Route path="/dashboard/notifications" element={<ProtectedRoute role="client"><Notifications /></ProtectedRoute>} />
+    <Route path="/dashboard/assistant" element={<ProtectedRoute role="client"><Assistant /></ProtectedRoute>} />
     <Route path="/dashboard/recommendations" element={<ProtectedRoute role="client"><Recommendations /></ProtectedRoute>} />
     <Route path="/dashboard/destinations" element={<ProtectedRoute role="client"><BrowseDestinations /></ProtectedRoute>} />
     <Route path="/dashboard/destinations/:ref" element={<ProtectedRoute role="client"><DestinationDetail /></ProtectedRoute>} />

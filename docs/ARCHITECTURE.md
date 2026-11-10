@@ -129,3 +129,18 @@ POST /itineraries/{id}/adapt    -> ContextService: fresh weather snapshots + ver
 * Tables (0006): `optimization_runs`, `context_snapshots`, `adaptation_proposals`, plus `itinerary_activities.locked`.
 * Freshness: weather older than `WEATHER_MAX_AGE_MINUTES` (default 180) is reported as stale and never acted on.
 * Known OR-Tools quirk: the `SetAllowedVehiclesForIndex` binding is broken in 9.15, so day restrictions use `VehicleVar(...).RemoveValue(...)`.
+
+
+## 11. Voice, bookings and notifications (Wave 3)
+```
+/assistant/chat -> AssistantService: nlu (rules, en/hi; optional LLM intent) -> RecommendationService | ItineraryService | BookingService (read-only)
+                   destructive edit -> "awaiting_confirmation" -> explicit yes/no turn; the assistant never pays or cancels
+/assistant/voice/* -> SpeechProvider (none | Sarvam | Azure)  ; browser Web Speech API is the client-side fallback
+POST /bookings (Idempotency-Key) -> lock room_inventory rows (FOR UPDATE, ordered by day) -> decrement availability -> pending_payment + hold
+POST /bookings/{id}/pay -> PaymentProvider (development simulator only) -> confirmed | failed ; cancel -> refund per policy ; expire_holds job releases stock
+workers: expire_holds, trip_reminders, weather_alerts, deliver_notifications  (advisory lock on a dedicated connection; one runner at a time)
+notifications: ON CONFLICT (idempotency_key) DO NOTHING -> in-app list/unread; optional email delivery with retries
+```
+* Concurrency safety rests on the database: ordered row locks, `CHECK (booked <= total)`, unique `(user_id, idempotency_key)`; verified with real multi-thread tests.
+* Payment, speech and email providers sit behind interfaces; only the payment simulator, mocked-HTTP speech adapters and an SMTP adapter exist, none verified live.
+* `today_local()` (`BOOKING_TIMEZONE`, default Asia/Kolkata) defines "today" for booking dates and refund tiers.

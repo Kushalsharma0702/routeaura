@@ -124,3 +124,19 @@ Objective: `Z = alpha*distance_km + beta*travel_min + gamma*travel_cost_rupees +
 | POST | `/adaptations/{pid}/reject` | marks it rejected; the itinerary is untouched |
 
 Issue types: `rain`, `heat` (outdoor activities only, from fresh provider forecasts), `closure` (admin-verified weekly hours with trip dates, or traveler-reported), `delay`, `over_budget` (traveler-reported). Alternatives are published attractions of the same destination, never verified-closed, ranked by category, relevance and proximity and chosen to minimise new schedule violations; a proposal's `preview` shows before/after and any remaining violations. Approval is required for every change.
+
+
+## Hotels and bookings (Wave 3)
+Public: `GET /hotels` (q, destination, min_stars, sort, page), `GET /hotels/{slug|id}`, `GET /hotels/{ref}/availability?check_in&check_out&guests&rooms`.
+Traveler (auth, owner-scoped; other users get 404):
+* `POST /bookings`: **requires `Idempotency-Key`**; same key + same body replays (200, header `Idempotent-Replayed: true`), same key + different body is 409. Creates `pending_payment` with a 15 min hold (`hold_expires_at`). 409 when sold out.
+* `POST /bookings/{id}/pay` body `{payment_method}`: development simulator tokens `dev_card_ok`, `dev_card_declined` (402), `dev_card_error`. Responses carry `payment_note` and `simulated: true` on payments. Idempotent via header.
+* `POST /bookings/{id}/cancel`: refund 100% when >= 2 days before check-in, 50% at 1 day, else 0 (see `refund_if_cancelled_now_minor`, `cancellation_policy`).
+* `GET /bookings?status=`.
+Admin (403 for travelers): `GET/POST /admin/hotels`, `PATCH/DELETE /admin/hotels/{id}`, `POST /admin/hotels/{id}/rooms`, `PATCH /admin/rooms/{id}`, `PUT /admin/rooms/{id}/inventory` (cannot go below booked), `GET /admin/bookings`, `POST /admin/bookings/{id}/cancel` (full refund), `POST /admin/bookings/{id}/retry-refund`, `GET /admin/analytics` (derived from the database; `notes` lists what is not measured).
+
+## Notifications (auth, owner-scoped)
+`GET /notifications?unread&page`, `GET /notifications/unread-count`, `POST /notifications/{id}/read`, `POST /notifications/read-all`.
+
+## Assistant (auth)
+`GET /assistant/capabilities`, `POST /assistant/chat {message, conversation_id?, language?, input_mode?}` -> `{reply, actions[], cards[], awaiting_confirmation, language, detected_language, interpreted_by}`, `GET/PATCH/DELETE /assistant/conversations[/{id}]`, `POST /assistant/voice/transcribe` (multipart `audio`, optional `language`), `POST /assistant/voice/synthesize {text, language}` (audio bytes). Voice errors: 503 `speech_not_configured`, 502 `speech_error`; credentials are never returned.

@@ -17,6 +17,7 @@ uv run alembic revision --autogenerate -m "describe change" --rev-id 0004   # th
 | 0004 | `user_interactions`, `recommendation_runs`, `recommendation_items`, `recommendation_feedback` |
 | 0005 | `itineraries`, `itinerary_activities`, `itinerary_versions` |
 | 0006 | `optimization_runs`, `context_snapshots`, `adaptation_proposals`, `itinerary_activities.locked` |
+| 0007 | `hotels`, `room_types`, `room_inventory` (CHECK booked<=total), `bookings` (unique user+idempotency key), `payments`, `notifications` (unique idempotency key), `notification_deliveries`, `assistant_conversations`, `assistant_messages` |
 
 ## PostGIS
 - **Decision:** PostGIS is used where available; plain `latitude`/`longitude` columns stay the source of truth, and a portable haversine backend serves everything else (`SPATIAL_BACKEND=auto|postgis|haversine`, default `auto`). See `TECHNICAL_DECISIONS.md` #13.

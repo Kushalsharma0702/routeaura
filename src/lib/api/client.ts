@@ -30,6 +30,8 @@ interface RequestOptions extends Omit<RequestInit, 'body'> {
   body?: unknown;
   params?: Record<string, string | number | boolean | undefined | null>;
   skipAuthRefresh?: boolean;
+  /** 'json' (default) or 'blob' (e.g. synthesized audio). FormData bodies are sent as multipart. */
+  parse?: 'json' | 'blob';
 }
 
 export interface AuthResponse {
@@ -81,7 +83,8 @@ async function parseError(res: Response): Promise<ApiError> {
 }
 
 export async function apiFetch<T>(path: string, opts: RequestOptions = {}): Promise<T> {
-  const { body, params, skipAuthRefresh, headers, ...rest } = opts;
+  const { body, params, skipAuthRefresh, headers, parse, ...rest } = opts;
+  const isForm = typeof FormData !== 'undefined' && body instanceof FormData;
   const qs = params
     ? '?' + new URLSearchParams(
         Object.entries(params).filter(([, v]) => v !== undefined && v !== null && v !== '')
@@ -93,11 +96,11 @@ export async function apiFetch<T>(path: string, opts: RequestOptions = {}): Prom
     ...rest,
     credentials: 'include',
     headers: {
-      ...(body !== undefined ? { 'Content-Type': 'application/json' } : {}),
+      ...(body !== undefined && !isForm ? { 'Content-Type': 'application/json' } : {}),
       ...(accessToken ? { Authorization: `Bearer ${accessToken}` } : {}),
       ...headers,
     },
-    body: body !== undefined ? JSON.stringify(body) : undefined,
+    body: body === undefined ? undefined : isForm ? (body as FormData) : JSON.stringify(body),
   });
 
   const usedToken = accessToken;
@@ -112,5 +115,6 @@ export async function apiFetch<T>(path: string, opts: RequestOptions = {}): Prom
     }
   }
   if (!res.ok) throw await parseError(res);
-  return res.status === 204 ? (undefined as T) : ((await res.json()) as T);
+  if (res.status === 204) return undefined as T;
+  return (parse === 'blob' ? await res.blob() : await res.json()) as T;
 }

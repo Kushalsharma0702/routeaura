@@ -11,6 +11,7 @@ from sqlalchemy.orm import Session
 
 from app.core.config import get_settings
 from app.database.session import get_sessionmaker
+from app.models.booking import Hotel, RoomType
 from app.models.catalog import Attraction, AttractionCategory, Destination
 from app.modules.catalog.slugs import slugify
 
@@ -69,8 +70,24 @@ ATTRACTIONS = {
 }
 
 
+# FICTIONAL hotels with PLACEHOLDER prices (source="seed"); they do not represent real properties.
+# destination: [(name, stars, (lat_offset, lng_offset), [(room name, capacity, price INR, rooms)])]
+HOTELS = {
+    "Goa": [("Palm Shore Resort", 4, (0.02, -0.03), [("Standard Room", 2, 4200, 8), ("Sea View Suite", 3, 7800, 3)]),
+            ("Old Quarter Guesthouse", 3, (-0.01, 0.02), [("Double Room", 2, 2200, 6), ("Family Room", 4, 3600, 2)])],
+    "Manali": [("Pine Ridge Lodge", 3, (0.01, 0.01), [("Cosy Room", 2, 2600, 7), ("Valley View Room", 3, 3900, 4)]),
+               ("Snowline Retreat", 4, (-0.02, 0.02), [("Deluxe Room", 2, 5200, 5), ("Family Suite", 5, 8600, 2)])],
+    "Jaipur": [("Rose Courtyard Haveli", 4, (0.005, 0.005), [("Heritage Room", 2, 4800, 6), ("Royal Suite", 3, 9200, 2)]),
+               ("Bazaar Stay", 3, (-0.01, -0.01), [("Standard Room", 2, 2400, 10), ("Triple Room", 3, 3100, 4)])],
+    "Kerala": [("Backwater Pavilion", 4, (-0.2, 0.1), [("Garden Room", 2, 4400, 6), ("Lake Cottage", 3, 7200, 3)]),
+               ("Tea Hills Homestay", 3, (0.1, 0.4), [("Hill Room", 2, 2800, 5), ("Family Cottage", 4, 4200, 2)])],
+    "Ladakh": [("Stone Courtyard Inn", 3, (0.01, 0.01), [("Standard Room", 2, 3200, 6), ("Premium Room", 3, 4800, 3)]),
+               ("High Pass Camp", 3, (-0.02, 0.03), [("Tent Cabin", 2, 3600, 8), ("Family Tent", 4, 5400, 3)])],
+}
+
+
 def seed(db: Session) -> dict[str, int]:
-    created = {"categories": 0, "destinations": 0, "attractions": 0}
+    created = {"categories": 0, "destinations": 0, "attractions": 0, "hotels": 0, "room_types": 0}
     cats: dict[str, AttractionCategory] = {}
     for name, desc in CATEGORIES.items():
         slug = slugify(name)
@@ -106,6 +123,25 @@ def seed(db: Session) -> dict[str, int]:
                                   typical_duration_minutes=minutes, is_outdoor=outdoor,
                                   is_published=True, source="seed"))
                 created["attractions"] += 1
+    db.flush()
+    for dname, hotels in HOTELS.items():
+        dest = db.scalar(select(Destination).where(Destination.slug == slugify(dname)))
+        for name, stars, (dlat, dlng), rooms in hotels:
+            slug = slugify(name)
+            hotel = db.scalar(select(Hotel).where(Hotel.slug == slug))
+            if hotel is None:
+                hotel = Hotel(destination_id=dest.id, slug=slug, name=name, description="Illustrative seed property (fictional) with placeholder prices.",
+                              latitude=float(dest.latitude) + dlat, longitude=float(dest.longitude) + dlng, star_rating=stars,
+                              amenities=["Wi-Fi", "Breakfast available"], is_published=True, source="seed")
+                db.add(hotel)
+                db.flush()
+                created["hotels"] += 1
+            have = {r.name for r in db.scalars(select(RoomType).where(RoomType.hotel_id == hotel.id))}
+            for rname, cap, price, total in rooms:
+                if rname not in have:
+                    db.add(RoomType(hotel_id=hotel.id, name=rname, capacity=cap, price_per_night_minor=price * 100, total_rooms=total,
+                                    description="Placeholder room type", amenities=[]))
+                    created["room_types"] += 1
     db.commit()
     return created
 

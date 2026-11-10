@@ -1,10 +1,7 @@
 import { Link, useLocation } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
 import { cn } from '@/lib/utils';
-import {
-  LayoutDashboard, Package, BookOpen, Users, MapPin, Route,
-  Globe, CalendarDays, User, Sparkles, Plane,
-} from 'lucide-react';
+import { LayoutDashboard, BookOpen, Users, MapPin, Building2, CalendarDays, Sparkles, Plane, Bot } from 'lucide-react';
 import { motion } from 'framer-motion';
 
 interface NavItem {
@@ -15,19 +12,20 @@ interface NavItem {
 
 const adminNav: NavItem[] = [
   { label: 'Home', href: '/admin', icon: LayoutDashboard },
-  { label: 'Packages', href: '/admin/packages', icon: Package },
+  { label: 'Hotels', href: '/admin/hotels', icon: Building2 },
   { label: 'Bookings', href: '/admin/bookings', icon: BookOpen },
   { label: 'Users', href: '/admin/users', icon: Users },
-  { label: 'More', href: '/admin/destinations', icon: MapPin },
+  { label: 'Places', href: '/admin/destinations', icon: MapPin },
 ];
 
+// Six items fit on phones. Destinations, Notifications and Profile are reachable from the header and the desktop sidebar.
 const clientNav: NavItem[] = [
   { label: 'Home', href: '/dashboard', icon: LayoutDashboard },
   { label: 'For You', href: '/dashboard/recommendations', icon: Sparkles },
-  { label: 'Places', href: '/dashboard/destinations', icon: MapPin },
   { label: 'Trips', href: '/dashboard/itineraries', icon: Plane },
+  { label: 'Hotels', href: '/dashboard/hotels', icon: Building2 },
   { label: 'Bookings', href: '/dashboard/bookings', icon: CalendarDays },
-  { label: 'Profile', href: '/dashboard/profile', icon: User },
+  { label: 'Assistant', href: '/dashboard/assistant', icon: Bot },
 ];
 
 export default function MobileBottomNav() {

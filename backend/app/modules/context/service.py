@@ -20,6 +20,7 @@ from app.models.optimization import AdaptationProposal, ContextSnapshot
 from app.models.user import User
 from app.modules.context import engine as ce
 from app.modules.itinerary.service import ItineraryService, _candidate
+from app.modules.notifications.service import NotificationService
 from app.modules.recommendations.service import RecommendationService
 from app.schemas.context import AdaptResultOut, ContextStatusOut, ProposalOut, ReportIn, SnapshotOut
 
@@ -404,7 +405,14 @@ class ContextService:
                 material=True,
             )
             self.db.add(prop)
+            self.db.flush()
             proposals.append(prop)
+            kind = "weather_alert" if issue.type in ("rain", "heat") else "itinerary_adapted"
+            title = (f"Weather alert for {it.title}" if kind == "weather_alert" else f"Suggested change for {it.title}")
+            NotificationService(self.db).notify(
+                it.user_id, kind if kind == "weather_alert" else "adaptation_proposal", title,
+                f"{issue.type.replace('_', ' ').capitalize()} on day {issue.day}: {issue.evidence}. Review the suggested change; nothing is changed until you approve.",
+                f"adaptation:proposal:{prop.id}", {"itinerary_id": str(it.id), "proposal_id": str(prop.id)})
         self.db.commit()
         for pr in proposals:
             self.db.refresh(pr)
@@ -535,5 +543,8 @@ class ContextService:
         self.itineraries._reschedule(it)
         self.itineraries._new_version(it, user, f"Adapted ({pr.trigger['type']}): " + "; ".join(summary))
         pr.status, pr.decided_at, pr.applied_version = "approved", self._now(), it.current_version
+        NotificationService(self.db).notify(
+            it.user_id, "itinerary_adapted", f"{it.title} updated", "; ".join(summary).capitalize() + ".",
+            f"adaptation:applied:{pr.id}", {"itinerary_id": str(it.id), "proposal_id": str(pr.id)})
         self.db.commit()
         return self.itineraries.to_out(it)

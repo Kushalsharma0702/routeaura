@@ -1,123 +1,57 @@
-/**
- * Admin Dashboard Page
- * Central control panel for administrators with:
- * - Key metrics (users, bookings, revenue, active trips)
- * - Monthly booking trends chart
- * - Destination popularity pie chart
- * - Recent bookings table
- * 
- * This gives admins a bird's eye view of the entire platform
- */
-import { Users, BookOpen, DollarSign, Plane } from 'lucide-react';
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell } from 'recharts';
+/** Admin dashboard: every figure is computed by the API from the database. */
+import { Bar, BarChart, CartesianGrid, Cell, Pie, PieChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts';
+import { Building2, CalendarCheck, IndianRupee, Map as MapIcon, Users } from 'lucide-react';
 import StatCard from '@/components/StatCard';
-import StatusBadge from '@/components/StatusBadge';
-import { bookings, monthlyBookingsData, destinationData, demoUsers, formatINR } from '@/data/mockData';
-import { motion } from 'framer-motion';
-import { useIsMobile } from '@/hooks/use-mobile';
+import { EmptyState, ErrorState } from '@/components/QueryState';
+import { Skeleton } from '@/components/ui/skeleton';
+import { formatMinor } from '@/lib/format';
+import { useAnalytics } from '@/hooks/useBookings';
+
+const COLORS = ['hsl(var(--primary))', 'hsl(var(--accent))', 'hsl(var(--warning))', 'hsl(var(--muted-foreground))', 'hsl(var(--destructive))'];
 
 export default function AdminDashboard() {
-  const isMobile = useIsMobile();
-  
-  // Calculate key metrics for the dashboard
-  const clients = demoUsers.filter(u => u.role === 'client');
-  const totalRevenue = bookings.filter(b => b.paymentStatus === 'paid').reduce((s, b) => s + b.totalAmount, 0);
-  const activeTrips = bookings.filter(b => b.status === 'approved').length;
+  const { data, isLoading, isError, refetch } = useAnalytics();
+  if (isLoading) return <div className="space-y-4" role="status" aria-label="Loading"><Skeleton className="h-10 w-64" /><div className="grid grid-cols-2 lg:grid-cols-5 gap-4">{[0, 1, 2, 3, 4].map(i => <Skeleton key={i} className="h-28 rounded-xl" />)}</div></div>;
+  if (isError || !data) return <ErrorState message="We couldn't load the analytics." onRetry={() => refetch()} />;
+  const totalBookings = Object.values(data.bookings_by_status).reduce((a, b) => a + b, 0);
+  const statusData = Object.entries(data.bookings_by_status).map(([name, value]) => ({ name: name.replace('_', ' '), value }));
 
   return (
     <div className="space-y-8 pb-24 lg:pb-0">
-      <div>
-        <h1 className="text-2xl font-display font-bold text-foreground">Admin Dashboard</h1>
-        <p className="text-muted-foreground text-sm mt-1">Overview of your travel management system</p>
+      <div><h1 className="text-2xl font-display font-bold text-foreground">Admin Dashboard</h1><p className="text-muted-foreground text-sm mt-1">Live figures from the database</p></div>
+      <div className="grid grid-cols-2 lg:grid-cols-5 gap-3 sm:gap-4">
+        <StatCard title="Users" value={data.users} icon={Users} variant="primary" />
+        <StatCard title="Hotels" value={data.hotels} icon={Building2} variant="accent" />
+        <StatCard title="Bookings" value={totalBookings} icon={CalendarCheck} variant="success" />
+        <StatCard title="Confirmed revenue" value={formatMinor(data.confirmed_revenue_minor, data.currency)} icon={IndianRupee} variant="warning" />
+        <StatCard title="Trips planned" value={data.itineraries} icon={MapIcon} variant="default" />
+      </div>
+      <p className="text-xs text-muted-foreground">{data.notes.join(' ')} Refunded so far: {formatMinor(data.refunded_minor, data.currency)}. Future occupancy: {data.future_occupancy_pct == null ? 'no inventory yet' : `${data.future_occupancy_pct}%`}.</p>
+
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <section className="bg-card rounded-xl border border-border/50 shadow-card p-4" aria-label="Bookings per month">
+          <h2 className="font-display font-semibold mb-3">Bookings per month</h2>
+          {data.monthly.length === 0 ? <EmptyState title="No bookings yet" hint="Charts appear after the first booking." /> : (
+            <div style={{ height: 240 }}><ResponsiveContainer><BarChart data={data.monthly}><CartesianGrid strokeDasharray="3 3" /><XAxis dataKey="month" fontSize={12} /><YAxis allowDecimals={false} fontSize={12} /><Tooltip /><Bar dataKey="bookings" fill="hsl(var(--primary))" radius={[4, 4, 0, 0]} /></BarChart></ResponsiveContainer></div>
+          )}
+        </section>
+        <section className="bg-card rounded-xl border border-border/50 shadow-card p-4" aria-label="Bookings by status">
+          <h2 className="font-display font-semibold mb-3">Bookings by status</h2>
+          {statusData.length === 0 ? <EmptyState title="No bookings yet" /> : (
+            <>
+              <div style={{ height: 200 }}><ResponsiveContainer><PieChart><Pie data={statusData} dataKey="value" nameKey="name" innerRadius={45} outerRadius={75} paddingAngle={3}>{statusData.map((_, i) => <Cell key={i} fill={COLORS[i % COLORS.length]} />)}</Pie><Tooltip /></PieChart></ResponsiveContainer></div>
+              <ul className="text-sm space-y-1">{statusData.map(s => <li key={s.name} className="flex justify-between capitalize"><span>{s.name}</span><span className="font-medium">{s.value}</span></li>)}</ul>
+            </>
+          )}
+        </section>
       </div>
 
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-        <StatCard title="Total Users" value={clients.length} icon={Users} trend="+12% this month" trendUp variant="primary" />
-        <StatCard title="Total Bookings" value={bookings.length} icon={BookOpen} trend="+8% this month" trendUp variant="accent" />
-        <StatCard title="Revenue" value={formatINR(totalRevenue)} icon={DollarSign} trend="+15% this month" trendUp variant="success" />
-        <StatCard title="Active Trips" value={activeTrips} icon={Plane} variant="warning" />
-      </div>
-
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }}
-          className="lg:col-span-2 bg-card rounded-xl border border-border/50 p-4 sm:p-6 shadow-card">
-          <h3 className="text-base font-display font-semibold text-card-foreground mb-4">Monthly Bookings</h3>
-          <ResponsiveContainer width="100%" height={280}>
-            <LineChart data={monthlyBookingsData}>
-              <CartesianGrid strokeDasharray="3 3" stroke="hsl(200 20% 85%)" />
-              {!isMobile && <XAxis dataKey="month" tick={{ fontSize: 12 }} stroke="hsl(200 15% 45%)" />}
-              <YAxis tick={{ fontSize: 12 }} stroke="hsl(200 15% 45%)" width={30} />
-              <Tooltip contentStyle={{ borderRadius: '8px', border: '1px solid hsl(200 20% 85%)', fontSize: '12px' }} />
-              <Line type="monotone" dataKey="bookings" stroke="hsl(180 50% 35%)" strokeWidth={2.5} dot={{ fill: 'hsl(180 50% 35%)', r: 4 }} />
-            </LineChart>
-          </ResponsiveContainer>
-        </motion.div>
-
-        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }}
-          className="bg-card rounded-xl border border-border/50 p-4 sm:p-6 shadow-card">
-          <h3 className="text-base font-display font-semibold text-card-foreground mb-4">Destination Popularity</h3>
-          <ResponsiveContainer width="100%" height={200}>
-            <PieChart>
-              <Pie data={destinationData} cx="50%" cy="50%" innerRadius={50} outerRadius={80} dataKey="value" paddingAngle={4}>
-                {destinationData.map((entry, i) => (
-                  <Cell key={i} fill={entry.fill} />
-                ))}
-              </Pie>
-              <Tooltip contentStyle={{ borderRadius: '8px', fontSize: '12px' }} />
-            </PieChart>
-          </ResponsiveContainer>
-          <div className="space-y-2 mt-2">
-            {destinationData.map(d => (
-              <div key={d.name} className="flex items-center justify-between text-sm">
-                <div className="flex items-center gap-2">
-                  <div className="w-3 h-3 rounded-full" style={{ backgroundColor: d.fill }} />
-                  <span className="text-muted-foreground">{d.name}</span>
-                </div>
-                <span className="font-medium text-card-foreground">{d.value}%</span>
-              </div>
-            ))}
-          </div>
-        </motion.div>
-      </div>
-
-      {/* Recent Bookings Table */}
-      <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.4 }}
-        className="bg-card rounded-xl border border-border/50 shadow-card overflow-hidden">
-        <div className="p-4 sm:p-6 pb-4">
-          <h3 className="text-base font-display font-semibold text-card-foreground">Recent Bookings</h3>
-        </div>
-        <div className="overflow-x-auto">
-          <table className="w-full">
-            <thead>
-              <tr className="border-t border-border/50">
-                <th className="text-left text-xs font-medium text-muted-foreground px-4 sm:px-6 py-3">Client</th>
-                <th className="text-left text-xs font-medium text-muted-foreground px-4 sm:px-6 py-3">Package</th>
-                <th className="text-left text-xs font-medium text-muted-foreground px-4 sm:px-6 py-3 hidden sm:table-cell">Date</th>
-                <th className="text-left text-xs font-medium text-muted-foreground px-4 sm:px-6 py-3">Amount</th>
-                <th className="text-left text-xs font-medium text-muted-foreground px-4 sm:px-6 py-3">Status</th>
-                <th className="text-left text-xs font-medium text-muted-foreground px-4 sm:px-6 py-3 hidden sm:table-cell">Payment</th>
-              </tr>
-            </thead>
-            <tbody>
-              {bookings.map(b => (
-                <tr key={b.id} className="border-t border-border/30 hover:bg-muted/30 transition-colors">
-                  <td className="px-4 sm:px-6 py-4">
-                    <div>
-                      <p className="text-sm font-medium text-card-foreground">{b.clientName}</p>
-                      <p className="text-xs text-muted-foreground hidden sm:block">{b.clientEmail}</p>
-                    </div>
-                  </td>
-                  <td className="px-4 sm:px-6 py-4 text-sm text-card-foreground">{b.packageName}</td>
-                  <td className="px-4 sm:px-6 py-4 text-sm text-muted-foreground hidden sm:table-cell">{b.travelDate}</td>
-                  <td className="px-4 sm:px-6 py-4 text-sm font-medium text-card-foreground">{formatINR(b.totalAmount)}</td>
-                  <td className="px-4 sm:px-6 py-4"><StatusBadge status={b.status} /></td>
-                  <td className="px-4 sm:px-6 py-4 hidden sm:table-cell"><StatusBadge status={b.paymentStatus} /></td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      </motion.div>
+      <section className="bg-card rounded-xl border border-border/50 shadow-card p-4" aria-label="Top destinations">
+        <h2 className="font-display font-semibold mb-3">Top destinations by confirmed bookings</h2>
+        {data.top_destinations.length === 0 ? <p className="text-sm text-muted-foreground">None yet.</p>
+          : <table className="w-full text-sm"><thead><tr className="text-left text-xs text-muted-foreground"><th className="py-1">Destination</th><th className="py-1 text-right">Bookings</th></tr></thead>
+            <tbody>{data.top_destinations.map(d => <tr key={d.destination} className="border-t border-border/40"><td className="py-2">{d.destination}</td><td className="py-2 text-right font-medium">{d.bookings}</td></tr>)}</tbody></table>}
+      </section>
     </div>
   );
 }

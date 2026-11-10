@@ -38,6 +38,29 @@ class Settings(BaseSettings):
     weather_base_url: str = "https://api.open-meteo.com"
     weather_max_age_minutes: int = 180
 
+    # Payments: only the labelled development simulator exists. Real sandbox/production providers need credentials
+    # and an adapter (see docs); nothing here ever charges real money.
+    payment_provider: Literal["development"] = "development"
+    booking_hold_minutes: int = 15
+    booking_timezone: str = "Asia/Kolkata"      # time zone of hotel calendar dates
+
+    # Notifications: in-app always; email via SMTP when configured (SMS needs a provider adapter)
+    email_provider: Literal["none", "smtp"] = "none"
+    smtp_host: str | None = None
+    smtp_port: int = 587
+    smtp_user: str | None = None
+    smtp_password: str | None = None
+    smtp_from: str = "RouteAura <no-reply@localhost>"
+    smtp_starttls: bool = True
+    background_jobs_enabled: bool = False        # start the in-process scheduler with the API (single-worker deployments)
+
+    # Speech (optional). Credentials stay on the server and are never returned to clients.
+    speech_provider: Literal["none", "sarvam", "azure"] = "none"
+    sarvam_api_key: str | None = None
+    azure_speech_key: str | None = None
+    azure_speech_region: str | None = None
+    speech_max_audio_bytes: int = 5_000_000
+
     # Spatial queries: 'auto' uses PostGIS when installed, else the portable haversine backend
     spatial_backend: Literal["auto", "postgis", "haversine"] = "auto"
 

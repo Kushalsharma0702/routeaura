@@ -282,4 +282,4 @@ def test_catalog_survives_new_sessions(client, seeded):
 def test_seed_is_idempotent(seeded):
     from app.scripts.seed_catalog import seed
 
-    assert seed(seeded) == {"categories": 0, "destinations": 0, "attractions": 0}
+    assert seed(seeded) == {"categories": 0, "destinations": 0, "attractions": 0, "hotels": 0, "room_types": 0}
