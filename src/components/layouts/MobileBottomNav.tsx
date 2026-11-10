@@ -3,7 +3,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import { cn } from '@/lib/utils';
 import {
   LayoutDashboard, Package, BookOpen, Users, MapPin, Route,
-  Globe, CalendarDays, User,
+  Globe, CalendarDays, User, Sparkles, Plane,
 } from 'lucide-react';
 import { motion } from 'framer-motion';
 
@@ -23,8 +23,9 @@ const adminNav: NavItem[] = [
 
 const clientNav: NavItem[] = [
   { label: 'Home', href: '/dashboard', icon: LayoutDashboard },
+  { label: 'For You', href: '/dashboard/recommendations', icon: Sparkles },
   { label: 'Places', href: '/dashboard/destinations', icon: MapPin },
-  { label: 'Packages', href: '/dashboard/packages', icon: Globe },
+  { label: 'Trips', href: '/dashboard/itineraries', icon: Plane },
   { label: 'Bookings', href: '/dashboard/bookings', icon: CalendarDays },
   { label: 'Profile', href: '/dashboard/profile', icon: User },
 ];
@@ -54,7 +55,8 @@ export default function MobileBottomNav() {
               key={item.href}
               to={item.href}
               className={cn(
-                'relative flex flex-col items-center gap-0.5 px-3.5 py-1.5 rounded-full transition-all duration-200',
+                navItems.length > 5 ? 'px-2.5' : 'px-3.5',
+                'relative flex flex-col items-center gap-0.5 py-1.5 rounded-full transition-all duration-200',
                 active
                   ? 'text-primary-foreground'
                   : 'text-muted-foreground'

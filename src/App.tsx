@@ -36,6 +36,10 @@ const BrowsePackages = lazy(() => import("./pages/client/BrowsePackages"));
 const MyBookings = lazy(() => import("./pages/client/MyBookings"));
 const ClientProfile = lazy(() => import("./pages/client/ClientProfile"));
 const ManageAttractions = lazy(() => import("./pages/admin/ManageAttractions"));
+const Planner = lazy(() => import("./pages/client/Planner"));
+const Itineraries = lazy(() => import("./pages/client/Itineraries"));
+const ItineraryDetail = lazy(() => import("./pages/client/ItineraryDetail"));
+const Recommendations = lazy(() => import("./pages/client/Recommendations"));
 const BrowseDestinations = lazy(() => import("./pages/client/BrowseDestinations"));
 const DestinationDetail = lazy(() => import("./pages/client/DestinationDetail"));
 
@@ -112,6 +116,10 @@ const AppRoutes = () => (
     {/* Client Routes - Accessible by regular logged-in users */}
     <Route path="/dashboard" element={<ProtectedRoute role="client"><ClientDashboard /></ProtectedRoute>} />
     <Route path="/dashboard/packages" element={<ProtectedRoute role="client"><BrowsePackages /></ProtectedRoute>} />
+    <Route path="/dashboard/planner" element={<ProtectedRoute role="client"><Planner /></ProtectedRoute>} />
+    <Route path="/dashboard/itineraries" element={<ProtectedRoute role="client"><Itineraries /></ProtectedRoute>} />
+    <Route path="/dashboard/itineraries/:id" element={<ProtectedRoute role="client"><ItineraryDetail /></ProtectedRoute>} />
+    <Route path="/dashboard/recommendations" element={<ProtectedRoute role="client"><Recommendations /></ProtectedRoute>} />
     <Route path="/dashboard/destinations" element={<ProtectedRoute role="client"><BrowseDestinations /></ProtectedRoute>} />
     <Route path="/dashboard/destinations/:ref" element={<ProtectedRoute role="client"><DestinationDetail /></ProtectedRoute>} />
     <Route path="/dashboard/bookings" element={<ProtectedRoute role="client"><MyBookings /></ProtectedRoute>} />

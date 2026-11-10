@@ -25,6 +25,12 @@ class Settings(BaseSettings):
     max_request_bytes: int = 1_000_000
     rate_limit_enabled: bool = True
 
+    # LLM (optional). With provider 'none' the itinerary generator uses its deterministic fallback.
+    llm_provider: Literal["none", "anthropic"] = "none"
+    llm_api_key: str | None = None
+    llm_model: str = "claude-sonnet-5-5"
+    llm_timeout_s: float = 30.0
+
     # Spatial queries: 'auto' uses PostGIS when installed, else the portable haversine backend
     spatial_backend: Literal["auto", "postgis", "haversine"] = "auto"
 

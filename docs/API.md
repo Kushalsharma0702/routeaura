@@ -67,3 +67,35 @@ Every admin write is recorded in `audit_logs`.
 
 ## Spatial behaviour
 Distances are metres on a sphere (R = 6,371,008.8 m). With PostGIS the query uses `ST_DWithin`/`ST_Distance` (spheroid disabled) on a GiST-indexed `geography` column; without it, a bounding-box prefilter on indexed `latitude, longitude` plus an SQL haversine. The two backends are tested against each other and against a pure-Python reference (including the antimeridian and poles).
+
+
+## Recommendations and interactions (Wave 1; all endpoints require authentication)
+| Method | Path | Notes |
+|---|---|---|
+| POST | `/recommendations/destinations` | body `RecommendationRequest`; returns `RecommendationResponse` |
+| POST | `/recommendations/attractions` | same; attraction filters: `filters.destination_id`, `filters.category`, `filters.outdoor` |
+| GET | `/recommendations/history` | `kind`, `page`, `page_size`; the caller's own runs, newest first |
+| GET | `/recommendations/history/{run_id}` | run detail with config, preference snapshot, impressions and explanations; other users' runs return 404 |
+| POST | `/recommendations/feedback` | `{recommendation_item_id, rating: relevant\|not_relevant, reasons[], comment?}`; upserts one row per user+impression; 404 for someone else's impression |
+| POST | `/interactions` | `{item_type, item_id, interaction_type, source?, recommendation_item_id?}` -> `{recorded, state}`; state events are idempotent (`recorded:false` when nothing changed) |
+| GET | `/interactions/state` | `item_type`, `item_id` -> `{saved, liked, disliked, dismissed}` |
+| GET | `/interactions/saved` | `item_type?`, paging; only published items |
+
+`RecommendationRequest`: `overrides` (`budget_per_day_minor`, `trip_duration_days`, `interests`, `preferred_climate`, `preferred_season`, `travel_month`, `travel_style`; a sent field replaces the saved value, null clears it), `priorities` (`{interest|budget|duration|climate|season|style: ignore|low|normal|high}`), `filters`, `strategy` (`weighted` default, `cosine`, `popularity`), `diversify` (default true), `diversity_lambda` (0-1), `include_dismissed`, `page`, `page_size` (<= 50). Each request persists one run (preference snapshot, config, impressions).
+Response items: `recommendation_item_id`, `rank`, `original_rank`, `score` (relevance, **not a probability**), `confidence`, `components[]`, `reasons[]`, `cautions[]`, `missing[]`, `saved/liked/disliked`, and the `destination` or `attraction`. `strategy` is `weighted|cosine|popularity|popularity_fallback`. See `RECOMMENDATION_ENGINE.md`.
+
+## Itineraries (Wave 1; all endpoints require authentication and are scoped to the owner, other users get 404)
+| Method | Path | Notes |
+|---|---|---|
+| POST | `/itineraries/generate` | `TripRequest` -> 201 `Itinerary`. Needs `destination_id` and `days` or `start_date`+`end_date`; optional `travelers`, `budget_total_minor`, `interests`, `travel_style`, `accommodation_preference`, `start_location{name,lat,lng}`, `title`, `prompt`, `use_llm` |
+| GET | `/itineraries` | paging; own, non-deleted |
+| GET / PATCH / DELETE | `/itineraries/{id}` | PATCH: `title`, `status (draft\|saved)`, `budget_total_minor`, `traveler_count`, `start_date`; DELETE is a soft delete (204) |
+| POST | `/itineraries/{id}/regenerate` | optional `interests`, `travel_style`, `budget_total_minor`, `use_llm`; replaces all activities (previous version stays restorable) |
+| POST | `/itineraries/{id}/activities` | `{attraction_id, day_number, position?, duration_min?}`; 409 if already present; 422 if not a published attraction of this destination |
+| PATCH / DELETE | `/itineraries/{id}/activities/{aid}` | PATCH `duration_min`, `notes`; DELETE returns the updated itinerary |
+| POST | `/itineraries/{id}/reorder` | `{days:[{day_number, activity_ids[]}]}` must list every activity exactly once |
+| GET | `/itineraries/{id}/versions`, `/versions/{n}` | history and snapshots |
+| POST | `/itineraries/{id}/versions/{n}/restore` | creates a new version; history is never rewritten |
+
+`Itinerary` includes `day_plans[].activities[]` (start/end time, `duration_min`, `travel_min`/`travel_m` with `travel_source: "estimate"`, `cost_minor` per person or null when unknown, `hours_status` `verified_open|verified_closed|unknown`, `warnings`, `explanation`), `budget` (known costs only, living estimate, deviation, `unknown_cost_items`), `violations[]` (`day_overrun|opening_hours|max_per_day|budget`), `generation_source` (`llm|deterministic_fallback`) and `generation_info` (notes, per-step timings, LLM provider/model/error, dropped attractions).
+Generation: the LLM (when `LLM_PROVIDER` and `LLM_API_KEY` are set) may only interpret a free-text `prompt` and propose day groupings from the supplied attraction ids; output is Pydantic-validated (one retry), then scheduled and checked by deterministic code. Any failure falls back to the deterministic planner and says so. Times, costs and constraints are never taken from the model.

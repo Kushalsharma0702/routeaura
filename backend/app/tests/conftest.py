@@ -40,7 +40,8 @@ def clean_db(migrated_db):
     with get_engine().begin() as conn:
         conn.execute(text(
             "TRUNCATE users, user_preferences, refresh_tokens, audit_logs, destination_categories, "
-            "attractions, destinations, attraction_categories CASCADE"))
+            "attractions, destinations, attraction_categories, recommendation_runs, recommendation_items, "
+            "recommendation_feedback, user_interactions, itinerary_versions, itinerary_activities, itineraries CASCADE"))
     reset_rate_limits()
     yield
 

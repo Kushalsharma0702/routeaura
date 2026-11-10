@@ -96,3 +96,20 @@ Argon2id, JWT validation with fixed algorithm and required claims, server-side R
 ## 8. Testing plan
 
 Backend: pytest against a real PostgreSQL test database built by running Alembic migrations; unit tests for pure algorithms; API tests via `TestClient`; concurrency test for booking inventory. Frontend: Vitest + Testing Library with the API layer mocked at the network boundary (MSW-style fetch mocks). E2E: scripted API-level flow first, browser E2E (Playwright) added in Milestone 9.
+
+
+## 9. Intelligence layer (Wave 1)
+```
+POST /recommendations/*  -> RecommendationService -> engine (pure) : features -> profile -> scoring -> ranking/MMR -> explanations
+POST /interactions        -> append-only user_interactions (state derived by folding events; idempotent)
+POST /itineraries/generate-> ItineraryService
+                              1. validate trip       2. rank attractions with the SAME engine (score_attractions)
+                              3. LLM (optional, provider-independent, validated)  OR  deterministic planner
+                              4. planner (pure): select -> nearest-neighbour order -> first-fit day packing -> time schedule -> validate
+                              5. persist itinerary + activities + version 1 (PostgreSQL)
+```
+* `engine/` and `itinerary/planner.py` import no database or framework code and are tested directly; services only translate between ORM rows and engine data classes.
+* `integrations/llm/`: `LLMClient` protocol, `NoLLM` (default), `AnthropicLLM` (HTTPS; request shape tested with fakes, **not exercised against the live API**). The itinerary service never trusts model output: IDs must belong to the supplied candidates, no duplicates, limits per day, otherwise retry once then fall back.
+* Tables added: `user_interactions`, `recommendation_runs`, `recommendation_items`, `recommendation_feedback` (0004); `itineraries`, `itinerary_activities`, `itinerary_versions` (0005). Preference snapshots live in `recommendation_runs.preferences`.
+* Ownership is enforced in the service layer for every itinerary/run/impression/feedback access.
+* Travel times are estimates (great-circle x 1.3 / 30 km/h) and labelled as such; routing providers are the next wave.

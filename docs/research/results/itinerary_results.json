@@ -1,0 +1,1964 @@
+{
+  "aggregate_across_seeds": {
+    "nearest_neighbour": {
+      "budget_deviation_pct": {
+        "mean": -18.658693333333332,
+        "sd_across_seeds": 0.6012253494138263
+      },
+      "has_violation": {
+        "mean": 0.67,
+        "sd_across_seeds": 0.024494897427831758
+      },
+      "latency_ms": {
+        "mean": 0.023983327950797197,
+        "sd_across_seeds": 0.0011476815431812118
+      },
+      "n_activities": {
+        "mean": 7.459999999999999,
+        "sd_across_seeds": 0.24819347291981708
+      },
+      "over_budget": {
+        "mean": 0.278,
+        "sd_across_seeds": 0.008692269873603515
+      },
+      "travel_min": {
+        "mean": 91.59666666666666,
+        "sd_across_seeds": 2.42741060025333
+      },
+      "utility": {
+        "mean": 4.980735999999999,
+        "sd_across_seeds": 0.10199858336162188
+      },
+      "v_budget": {
+        "mean": 0.278,
+        "sd_across_seeds": 0.008692269873603515
+      },
+      "v_day_overrun": {
+        "mean": 0.21200000000000002,
+        "sd_across_seeds": 0.016431676725154984
+      },
+      "v_max_per_day": {
+        "mean": 0.0,
+        "sd_across_seeds": 0.0
+      },
+      "v_opening_hours": {
+        "mean": 0.7573333333333333,
+        "sd_across_seeds": 0.020736441353327733
+      },
+      "violations": {
+        "mean": 1.2473333333333332,
+        "sd_across_seeds": 0.03981903509071455
+      }
+    },
+    "simple_order": {
+      "budget_deviation_pct": {
+        "mean": -18.658693333333332,
+        "sd_across_seeds": 0.6012253494138263
+      },
+      "has_violation": {
+        "mean": 0.7053333333333333,
+        "sd_across_seeds": 0.020628997929021075
+      },
+      "latency_ms": {
+        "mean": 0.009264407960775618,
+        "sd_across_seeds": 0.0004633831738355592
+      },
+      "n_activities": {
+        "mean": 7.459999999999999,
+        "sd_across_seeds": 0.24819347291981708
+      },
+      "over_budget": {
+        "mean": 0.278,
+        "sd_across_seeds": 0.008692269873603515
+      },
+      "travel_min": {
+        "mean": 130.892,
+        "sd_across_seeds": 4.057679687265179
+      },
+      "utility": {
+        "mean": 4.980735999999999,
+        "sd_across_seeds": 0.10199858336162188
+      },
+      "v_budget": {
+        "mean": 0.278,
+        "sd_across_seeds": 0.008692269873603515
+      },
+      "v_day_overrun": {
+        "mean": 0.26,
+        "sd_across_seeds": 0.01986062547968831
+      },
+      "v_max_per_day": {
+        "mean": 0.0,
+        "sd_across_seeds": 0.0
+      },
+      "v_opening_hours": {
+        "mean": 0.826,
+        "sd_across_seeds": 0.07606283951809553
+      },
+      "violations": {
+        "mean": 1.364,
+        "sd_across_seeds": 0.09068872280743868
+      }
+    },
+    "validated_planner": {
+      "budget_deviation_pct": {
+        "mean": -23.385533333333335,
+        "sd_across_seeds": 0.5971483516588548
+      },
+      "has_violation": {
+        "mean": 0.0,
+        "sd_across_seeds": 0.0
+      },
+      "latency_ms": {
+        "mean": 0.07827772540864923,
+        "sd_across_seeds": 0.0021016977943077134
+      },
+      "n_activities": {
+        "mean": 8.265333333333334,
+        "sd_across_seeds": 0.24927227416354764
+      },
+      "over_budget": {
+        "mean": 0.0,
+        "sd_across_seeds": 0.0
+      },
+      "travel_min": {
+        "mean": 100.55199999999999,
+        "sd_across_seeds": 2.867231145974183
+      },
+      "utility": {
+        "mean": 4.83031,
+        "sd_across_seeds": 0.09308237549492285
+      },
+      "v_budget": {
+        "mean": 0.0,
+        "sd_across_seeds": 0.0
+      },
+      "v_day_overrun": {
+        "mean": 0.0,
+        "sd_across_seeds": 0.0
+      },
+      "v_max_per_day": {
+        "mean": 0.0,
+        "sd_across_seeds": 0.0
+      },
+      "v_opening_hours": {
+        "mean": 0.0,
+        "sd_across_seeds": 0.0
+      },
+      "violations": {
+        "mean": 0.0,
+        "sd_across_seeds": 0.0
+      }
+    }
+  },
+  "label": "SYNTHETIC experiment: generated trips, not real users or live data. See docs/research/ITINERARY_EVALUATION.md.",
+  "runs": [
+    {
+      "dataset": {
+        "n_attractions": 14,
+        "n_trips": 300,
+        "seed": 42,
+        "tight_budget_fraction": 0.3,
+        "unknown_cost_fraction": 0.4,
+        "verified_hours_fraction": 0.5
+      },
+      "label": "SYNTHETIC experiment: generated trips, not real users or live data. See docs/research/ITINERARY_EVALUATION.md.",
+      "limitations": [
+        "Trips, attractions, hours and costs are randomly generated; real catalogues are smaller and less varied.",
+        "Travel times are the planner's own estimates (great-circle x 1.3 / 30 km/h): the same model is used to build and to judge.",
+        "The validator is the planner's own rule set, so zero violations for validated_planner measures consistency, not real-world feasibility.",
+        "LLM-assisted planning is not benchmarked: it needs live credentials and is non-deterministic."
+      ],
+      "methods": {
+        "nearest_neighbour": {
+          "budget_deviation_pct": {
+            "ci95": [
+              -21.7195,
+              -15.461300000000001
+            ],
+            "mean": -18.534399999999998
+          },
+          "has_violation": {
+            "ci95": [
+              0.59,
+              0.7
+            ],
+            "mean": 0.65
+          },
+          "latency_ms": {
+            "ci95": [
+              0.0232220567947176,
+              0.026498830096291687
+            ],
+            "mean": 0.024897056731181994
+          },
+          "n_activities": {
+            "ci95": [
+              6.91,
+              7.65
+            ],
+            "mean": 7.29
+          },
+          "over_budget": {
+            "ci95": [
+              0.22,
+              0.32
+            ],
+            "mean": 0.27
+          },
+          "travel_min": {
+            "ci95": [
+              85.77666666666667,
+              95.19
+            ],
+            "mean": 90.48666666666666
+          },
+          "utility": {
+            "ci95": [
+              4.71763,
+              5.116099999999999
+            ],
+            "mean": 4.924573333333334
+          },
+          "v_budget": {
+            "ci95": [
+              0.22,
+              0.32
+            ],
+            "mean": 0.27
+          },
+          "v_day_overrun": {
+            "ci95": [
+              0.14666666666666667,
+              0.24666666666666667
+            ],
+            "mean": 0.19666666666666666
+          },
+          "v_max_per_day": {
+            "ci95": [
+              0.0,
+              0.0
+            ],
+            "mean": 0.0
+          },
+          "v_opening_hours": {
+            "ci95": [
+              0.6433333333333333,
+              0.8566666666666667
+            ],
+            "mean": 0.7433333333333333
+          },
+          "violations": {
+            "ci95": [
+              1.0766666666666667,
+              1.3533333333333333
+            ],
+            "mean": 1.21
+          }
+        },
+        "simple_order": {
+          "budget_deviation_pct": {
+            "ci95": [
+              -21.7195,
+              -15.461300000000001
+            ],
+            "mean": -18.534399999999998
+          },
+          "has_violation": {
+            "ci95": [
+              0.6666666666666666,
+              0.7666666666666667
+            ],
+            "mean": 0.72
+          },
+          "latency_ms": {
+            "ci95": [
+              0.009571399884104418,
+              0.010500789806731822
+            ],
+            "mean": 0.010050539882892432
+          },
+          "n_activities": {
+            "ci95": [
+              6.91,
+              7.65
+            ],
+            "mean": 7.29
+          },
+          "over_budget": {
+            "ci95": [
+              0.22,
+              0.32
+            ],
+            "mean": 0.27
+          },
+          "travel_min": {
+            "ci95": [
+              119.63333333333334,
+              133.88
+            ],
+            "mean": 126.59
+          },
+          "utility": {
+            "ci95": [
+              4.71763,
+              5.116099999999999
+            ],
+            "mean": 4.924573333333334
+          },
+          "v_budget": {
+            "ci95": [
+              0.22,
+              0.32
+            ],
+            "mean": 0.27
+          },
+          "v_day_overrun": {
+            "ci95": [
+              0.20666666666666667,
+              0.32666666666666666
+            ],
+            "mean": 0.26666666666666666
+          },
+          "v_max_per_day": {
+            "ci95": [
+              0.0,
+              0.0
+            ],
+            "mean": 0.0
+          },
+          "v_opening_hours": {
+            "ci95": [
+              0.7133333333333334,
+              0.9433333333333334
+            ],
+            "mean": 0.82
+          },
+          "violations": {
+            "ci95": [
+              1.21,
+              1.5133333333333334
+            ],
+            "mean": 1.3566666666666667
+          }
+        },
+        "validated_planner": {
+          "budget_deviation_pct": {
+            "ci95": [
+              -26.325833333333332,
+              -22.1619
+            ],
+            "mean": -24.189666666666664
+          },
+          "has_violation": {
+            "ci95": [
+              0.0,
+              0.0
+            ],
+            "mean": 0.0
+          },
+          "latency_ms": {
+            "ci95": [
+              0.07149957344760575,
+              0.08221427011449123
+            ],
+            "mean": 0.07689803677446132
+          },
+          "n_activities": {
+            "ci95": [
+              7.616666666666666,
+              8.433333333333334
+            ],
+            "mean": 8.043333333333333
+          },
+          "over_budget": {
+            "ci95": [
+              0.0,
+              0.0
+            ],
+            "mean": 0.0
+          },
+          "travel_min": {
+            "ci95": [
+              92.32333333333334,
+              103.45666666666666
+            ],
+            "mean": 97.96666666666667
+          },
+          "utility": {
+            "ci95": [
+              4.538296666666667,
+              4.957083333333333
+            ],
+            "mean": 4.759163333333333
+          },
+          "v_budget": {
+            "ci95": [
+              0.0,
+              0.0
+            ],
+            "mean": 0.0
+          },
+          "v_day_overrun": {
+            "ci95": [
+              0.0,
+              0.0
+            ],
+            "mean": 0.0
+          },
+          "v_max_per_day": {
+            "ci95": [
+              0.0,
+              0.0
+            ],
+            "mean": 0.0
+          },
+          "v_opening_hours": {
+            "ci95": [
+              0.0,
+              0.0
+            ],
+            "mean": 0.0
+          },
+          "violations": {
+            "ci95": [
+              0.0,
+              0.0
+            ],
+            "mean": 0.0
+          }
+        }
+      },
+      "n_bootstrap": 1000,
+      "paired_differences": {
+        "nearest_neighbour - simple_order (has_violation)": {
+          "ci95": [
+            -0.11333333333333333,
+            -0.02666666666666667
+          ],
+          "mean": -0.07,
+          "n": 300
+        },
+        "nearest_neighbour - simple_order (n_activities)": {
+          "ci95": [
+            0.0,
+            0.0
+          ],
+          "mean": 0.0,
+          "n": 300
+        },
+        "nearest_neighbour - simple_order (over_budget)": {
+          "ci95": [
+            0.0,
+            0.0
+          ],
+          "mean": 0.0,
+          "n": 300
+        },
+        "nearest_neighbour - simple_order (utility)": {
+          "ci95": [
+            0.0,
+            0.0
+          ],
+          "mean": 0.0,
+          "n": 300
+        },
+        "nearest_neighbour - simple_order (violations)": {
+          "ci95": [
+            -0.25333333333333335,
+            -0.043333333333333335
+          ],
+          "mean": -0.14666666666666667,
+          "n": 300
+        },
+        "validated_planner - simple_order (has_violation)": {
+          "ci95": [
+            -0.7666666666666667,
+            -0.6666666666666666
+          ],
+          "mean": -0.72,
+          "n": 300
+        },
+        "validated_planner - simple_order (n_activities)": {
+          "ci95": [
+            0.57,
+            0.91
+          ],
+          "mean": 0.7533333333333333,
+          "n": 300
+        },
+        "validated_planner - simple_order (over_budget)": {
+          "ci95": [
+            -0.32,
+            -0.22
+          ],
+          "mean": -0.27,
+          "n": 300
+        },
+        "validated_planner - simple_order (utility)": {
+          "ci95": [
+            -0.26866,
+            -0.060360000000000004
+          ],
+          "mean": -0.16541,
+          "n": 300
+        },
+        "validated_planner - simple_order (violations)": {
+          "ci95": [
+            -1.5133333333333334,
+            -1.21
+          ],
+          "mean": -1.3566666666666667,
+          "n": 300
+        }
+      }
+    },
+    {
+      "dataset": {
+        "n_attractions": 14,
+        "n_trips": 300,
+        "seed": 43,
+        "tight_budget_fraction": 0.3,
+        "unknown_cost_fraction": 0.4,
+        "verified_hours_fraction": 0.5
+      },
+      "label": "SYNTHETIC experiment: generated trips, not real users or live data. See docs/research/ITINERARY_EVALUATION.md.",
+      "limitations": [
+        "Trips, attractions, hours and costs are randomly generated; real catalogues are smaller and less varied.",
+        "Travel times are the planner's own estimates (great-circle x 1.3 / 30 km/h): the same model is used to build and to judge.",
+        "The validator is the planner's own rule set, so zero violations for validated_planner measures consistency, not real-world feasibility.",
+        "LLM-assisted planning is not benchmarked: it needs live credentials and is non-deterministic."
+      ],
+      "methods": {
+        "nearest_neighbour": {
+          "budget_deviation_pct": {
+            "ci95": [
+              -21.90233333333333,
+              -15.608566666666666
+            ],
+            "mean": -18.841166666666666
+          },
+          "has_violation": {
+            "ci95": [
+              0.6166666666666667,
+              0.72
+            ],
+            "mean": 0.67
+          },
+          "latency_ms": {
+            "ci95": [
+              0.02051981338202798,
+              0.02358192334213527
+            ],
+            "mean": 0.02201800992528054
+          },
+          "n_activities": {
+            "ci95": [
+              6.74,
+              7.5
+            ],
+            "mean": 7.11
+          },
+          "over_budget": {
+            "ci95": [
+              0.22,
+              0.3233333333333333
+            ],
+            "mean": 0.27
+          },
+          "travel_min": {
+            "ci95": [
+              84.07,
+              92.51333333333334
+            ],
+            "mean": 88.18666666666667
+          },
+          "utility": {
+            "ci95": [
+              4.65538,
+              5.0466
+            ],
+            "mean": 4.84338
+          },
+          "v_budget": {
+            "ci95": [
+              0.22,
+              0.3233333333333333
+            ],
+            "mean": 0.27
+          },
+          "v_day_overrun": {
+            "ci95": [
+              0.15666666666666668,
+              0.25666666666666665
+            ],
+            "mean": 0.20666666666666667
+          },
+          "v_max_per_day": {
+            "ci95": [
+              0.0,
+              0.0
+            ],
+            "mean": 0.0
+          },
+          "v_opening_hours": {
+            "ci95": [
+              0.6333333333333333,
+              0.85
+            ],
+            "mean": 0.7333333333333333
+          },
+          "violations": {
+            "ci95": [
+              1.0833333333333333,
+              1.3433333333333333
+            ],
+            "mean": 1.21
+          }
+        },
+        "simple_order": {
+          "budget_deviation_pct": {
+            "ci95": [
+              -21.90233333333333,
+              -15.608566666666666
+            ],
+            "mean": -18.841166666666666
+          },
+          "has_violation": {
+            "ci95": [
+              0.6466666666666666,
+              0.75
+            ],
+            "mean": 0.7
+          },
+          "latency_ms": {
+            "ci95": [
+              0.008433253339414174,
+              0.00929025337730612
+            ],
+            "mean": 0.008832646659963453
+          },
+          "n_activities": {
+            "ci95": [
+              6.74,
+              7.5
+            ],
+            "mean": 7.11
+          },
+          "over_budget": {
+            "ci95": [
+              0.22,
+              0.3233333333333333
+            ],
+            "mean": 0.27
+          },
+          "travel_min": {
+            "ci95": [
+              120.57333333333334,
+              134.83333333333334
+            ],
+            "mean": 127.65333333333334
+          },
+          "utility": {
+            "ci95": [
+              4.65538,
+              5.0466
+            ],
+            "mean": 4.84338
+          },
+          "v_budget": {
+            "ci95": [
+              0.22,
+              0.3233333333333333
+            ],
+            "mean": 0.27
+          },
+          "v_day_overrun": {
+            "ci95": [
+              0.19666666666666666,
+              0.30666666666666664
+            ],
+            "mean": 0.25
+          },
+          "v_max_per_day": {
+            "ci95": [
+              0.0,
+              0.0
+            ],
+            "mean": 0.0
+          },
+          "v_opening_hours": {
+            "ci95": [
+              0.6833333333333333,
+              0.9133333333333333
+            ],
+            "mean": 0.7966666666666666
+          },
+          "violations": {
+            "ci95": [
+              1.1833333333333333,
+              1.47
+            ],
+            "mean": 1.3166666666666667
+          }
+        },
+        "validated_planner": {
+          "budget_deviation_pct": {
+            "ci95": [
+              -25.5728,
+              -21.4346
+            ],
+            "mean": -23.564933333333332
+          },
+          "has_violation": {
+            "ci95": [
+              0.0,
+              0.0
+            ],
+            "mean": 0.0
+          },
+          "latency_ms": {
+            "ci95": [
+              0.07112418352335226,
+              0.08151941339747282
+            ],
+            "mean": 0.0762552901142044
+          },
+          "n_activities": {
+            "ci95": [
+              7.556666666666667,
+              8.376666666666667
+            ],
+            "mean": 7.946666666666666
+          },
+          "over_budget": {
+            "ci95": [
+              0.0,
+              0.0
+            ],
+            "mean": 0.0
+          },
+          "travel_min": {
+            "ci95": [
+              93.35,
+              104.05333333333333
+            ],
+            "mean": 98.44666666666667
+          },
+          "utility": {
+            "ci95": [
+              4.525006666666666,
+              4.925316666666666
+            ],
+            "mean": 4.71282
+          },
+          "v_budget": {
+            "ci95": [
+              0.0,
+              0.0
+            ],
+            "mean": 0.0
+          },
+          "v_day_overrun": {
+            "ci95": [
+              0.0,
+              0.0
+            ],
+            "mean": 0.0
+          },
+          "v_max_per_day": {
+            "ci95": [
+              0.0,
+              0.0
+            ],
+            "mean": 0.0
+          },
+          "v_opening_hours": {
+            "ci95": [
+              0.0,
+              0.0
+            ],
+            "mean": 0.0
+          },
+          "violations": {
+            "ci95": [
+              0.0,
+              0.0
+            ],
+            "mean": 0.0
+          }
+        }
+      },
+      "n_bootstrap": 1000,
+      "paired_differences": {
+        "nearest_neighbour - simple_order (has_violation)": {
+          "ci95": [
+            -0.06666666666666667,
+            0.013333333333333334
+          ],
+          "mean": -0.03,
+          "n": 300
+        },
+        "nearest_neighbour - simple_order (n_activities)": {
+          "ci95": [
+            0.0,
+            0.0
+          ],
+          "mean": 0.0,
+          "n": 300
+        },
+        "nearest_neighbour - simple_order (over_budget)": {
+          "ci95": [
+            0.0,
+            0.0
+          ],
+          "mean": 0.0,
+          "n": 300
+        },
+        "nearest_neighbour - simple_order (utility)": {
+          "ci95": [
+            0.0,
+            0.0
+          ],
+          "mean": 0.0,
+          "n": 300
+        },
+        "nearest_neighbour - simple_order (violations)": {
+          "ci95": [
+            -0.21333333333333335,
+            -0.006666666666666667
+          ],
+          "mean": -0.10666666666666667,
+          "n": 300
+        },
+        "validated_planner - simple_order (has_violation)": {
+          "ci95": [
+            -0.75,
+            -0.6466666666666666
+          ],
+          "mean": -0.7,
+          "n": 300
+        },
+        "validated_planner - simple_order (n_activities)": {
+          "ci95": [
+            0.6633333333333333,
+            1.01
+          ],
+          "mean": 0.8366666666666667,
+          "n": 300
+        },
+        "validated_planner - simple_order (over_budget)": {
+          "ci95": [
+            -0.3233333333333333,
+            -0.22
+          ],
+          "mean": -0.27,
+          "n": 300
+        },
+        "validated_planner - simple_order (utility)": {
+          "ci95": [
+            -0.23008999999999996,
+            -0.03221999999999995
+          ],
+          "mean": -0.13055999999999995,
+          "n": 300
+        },
+        "validated_planner - simple_order (violations)": {
+          "ci95": [
+            -1.47,
+            -1.1833333333333333
+          ],
+          "mean": -1.3166666666666667,
+          "n": 300
+        }
+      }
+    },
+    {
+      "dataset": {
+        "n_attractions": 14,
+        "n_trips": 300,
+        "seed": 44,
+        "tight_budget_fraction": 0.3,
+        "unknown_cost_fraction": 0.4,
+        "verified_hours_fraction": 0.5
+      },
+      "label": "SYNTHETIC experiment: generated trips, not real users or live data. See docs/research/ITINERARY_EVALUATION.md.",
+      "limitations": [
+        "Trips, attractions, hours and costs are randomly generated; real catalogues are smaller and less varied.",
+        "Travel times are the planner's own estimates (great-circle x 1.3 / 30 km/h): the same model is used to build and to judge.",
+        "The validator is the planner's own rule set, so zero violations for validated_planner measures consistency, not real-world feasibility.",
+        "LLM-assisted planning is not benchmarked: it needs live credentials and is non-deterministic."
+      ],
+      "methods": {
+        "nearest_neighbour": {
+          "budget_deviation_pct": {
+            "ci95": [
+              -22.679433333333332,
+              -16.344033333333332
+            ],
+            "mean": -19.555033333333334
+          },
+          "has_violation": {
+            "ci95": [
+              0.5933333333333334,
+              0.7
+            ],
+            "mean": 0.65
+          },
+          "latency_ms": {
+            "ci95": [
+              0.022678073243393253,
+              0.025630849789498217
+            ],
+            "mean": 0.024156403269444127
+          },
+          "n_activities": {
+            "ci95": [
+              7.24,
+              7.99
+            ],
+            "mean": 7.61
+          },
+          "over_budget": {
+            "ci95": [
+              0.23333333333333334,
+              0.33666666666666667
+            ],
+            "mean": 0.2833333333333333
+          },
+          "travel_min": {
+            "ci95": [
+              87.74666666666667,
+              97.35333333333334
+            ],
+            "mean": 92.60666666666667
+          },
+          "utility": {
+            "ci95": [
+              4.87355,
+              5.2697899999999995
+            ],
+            "mean": 5.082176666666666
+          },
+          "v_budget": {
+            "ci95": [
+              0.23333333333333334,
+              0.33666666666666667
+            ],
+            "mean": 0.2833333333333333
+          },
+          "v_day_overrun": {
+            "ci95": [
+              0.15,
+              0.25333333333333335
+            ],
+            "mean": 0.2
+          },
+          "v_max_per_day": {
+            "ci95": [
+              0.0,
+              0.0
+            ],
+            "mean": 0.0
+          },
+          "v_opening_hours": {
+            "ci95": [
+              0.6466666666666666,
+              0.8766666666666667
+            ],
+            "mean": 0.7566666666666667
+          },
+          "violations": {
+            "ci95": [
+              1.0966666666666667,
+              1.4033333333333333
+            ],
+            "mean": 1.24
+          }
+        },
+        "simple_order": {
+          "budget_deviation_pct": {
+            "ci95": [
+              -22.679433333333332,
+              -16.344033333333332
+            ],
+            "mean": -19.555033333333334
+          },
+          "has_violation": {
+            "ci95": [
+              0.62,
+              0.73
+            ],
+            "mean": 0.6766666666666666
+          },
+          "latency_ms": {
+            "ci95": [
+              0.00877179324258274,
+              0.00968057337255838
+            ],
+            "mean": 0.009217079908315403
+          },
+          "n_activities": {
+            "ci95": [
+              7.24,
+              7.99
+            ],
+            "mean": 7.61
+          },
+          "over_budget": {
+            "ci95": [
+              0.23333333333333334,
+              0.33666666666666667
+            ],
+            "mean": 0.2833333333333333
+          },
+          "travel_min": {
+            "ci95": [
+              124.68333333333334,
+              139.95333333333335
+            ],
+            "mean": 132.37666666666667
+          },
+          "utility": {
+            "ci95": [
+              4.87355,
+              5.2697899999999995
+            ],
+            "mean": 5.082176666666666
+          },
+          "v_budget": {
+            "ci95": [
+              0.23333333333333334,
+              0.33666666666666667
+            ],
+            "mean": 0.2833333333333333
+          },
+          "v_day_overrun": {
+            "ci95": [
+              0.18,
+              0.29333333333333333
+            ],
+            "mean": 0.23333333333333334
+          },
+          "v_max_per_day": {
+            "ci95": [
+              0.0,
+              0.0
+            ],
+            "mean": 0.0
+          },
+          "v_opening_hours": {
+            "ci95": [
+              0.6366666666666667,
+              0.8433333333333334
+            ],
+            "mean": 0.7433333333333333
+          },
+          "violations": {
+            "ci95": [
+              1.11,
+              1.4033333333333333
+            ],
+            "mean": 1.26
+          }
+        },
+        "validated_planner": {
+          "budget_deviation_pct": {
+            "ci95": [
+              -25.5442,
+              -21.3201
+            ],
+            "mean": -23.458
+          },
+          "has_violation": {
+            "ci95": [
+              0.0,
+              0.0
+            ],
+            "mean": 0.0
+          },
+          "latency_ms": {
+            "ci95": [
+              0.0732141600989659,
+              0.08336469680216396
+            ],
+            "mean": 0.0783954000750479
+          },
+          "n_activities": {
+            "ci95": [
+              8.053333333333333,
+              8.826666666666666
+            ],
+            "mean": 8.433333333333334
+          },
+          "over_budget": {
+            "ci95": [
+              0.0,
+              0.0
+            ],
+            "mean": 0.0
+          },
+          "travel_min": {
+            "ci95": [
+              96.26,
+              106.48
+            ],
+            "mean": 101.41333333333333
+          },
+          "utility": {
+            "ci95": [
+              4.757603333333333,
+              5.12653
+            ],
+            "mean": 4.943876666666667
+          },
+          "v_budget": {
+            "ci95": [
+              0.0,
+              0.0
+            ],
+            "mean": 0.0
+          },
+          "v_day_overrun": {
+            "ci95": [
+              0.0,
+              0.0
+            ],
+            "mean": 0.0
+          },
+          "v_max_per_day": {
+            "ci95": [
+              0.0,
+              0.0
+            ],
+            "mean": 0.0
+          },
+          "v_opening_hours": {
+            "ci95": [
+              0.0,
+              0.0
+            ],
+            "mean": 0.0
+          },
+          "violations": {
+            "ci95": [
+              0.0,
+              0.0
+            ],
+            "mean": 0.0
+          }
+        }
+      },
+      "n_bootstrap": 1000,
+      "paired_differences": {
+        "nearest_neighbour - simple_order (has_violation)": {
+          "ci95": [
+            -0.07333333333333333,
+            0.02
+          ],
+          "mean": -0.02666666666666667,
+          "n": 300
+        },
+        "nearest_neighbour - simple_order (n_activities)": {
+          "ci95": [
+            0.0,
+            0.0
+          ],
+          "mean": 0.0,
+          "n": 300
+        },
+        "nearest_neighbour - simple_order (over_budget)": {
+          "ci95": [
+            0.0,
+            0.0
+          ],
+          "mean": 0.0,
+          "n": 300
+        },
+        "nearest_neighbour - simple_order (utility)": {
+          "ci95": [
+            0.0,
+            0.0
+          ],
+          "mean": 0.0,
+          "n": 300
+        },
+        "nearest_neighbour - simple_order (violations)": {
+          "ci95": [
+            -0.14333333333333334,
+            0.1
+          ],
+          "mean": -0.02,
+          "n": 300
+        },
+        "validated_planner - simple_order (has_violation)": {
+          "ci95": [
+            -0.73,
+            -0.62
+          ],
+          "mean": -0.6766666666666666,
+          "n": 300
+        },
+        "validated_planner - simple_order (n_activities)": {
+          "ci95": [
+            0.6633333333333333,
+            0.9833333333333333
+          ],
+          "mean": 0.8233333333333334,
+          "n": 300
+        },
+        "validated_planner - simple_order (over_budget)": {
+          "ci95": [
+            -0.33666666666666667,
+            -0.23333333333333334
+          ],
+          "mean": -0.2833333333333333,
+          "n": 300
+        },
+        "validated_planner - simple_order (utility)": {
+          "ci95": [
+            -0.23215999999999998,
+            -0.041233333333333316
+          ],
+          "mean": -0.13829999999999998,
+          "n": 300
+        },
+        "validated_planner - simple_order (violations)": {
+          "ci95": [
+            -1.4033333333333333,
+            -1.11
+          ],
+          "mean": -1.26,
+          "n": 300
+        }
+      }
+    },
+    {
+      "dataset": {
+        "n_attractions": 14,
+        "n_trips": 300,
+        "seed": 45,
+        "tight_budget_fraction": 0.3,
+        "unknown_cost_fraction": 0.4,
+        "verified_hours_fraction": 0.5
+      },
+      "label": "SYNTHETIC experiment: generated trips, not real users or live data. See docs/research/ITINERARY_EVALUATION.md.",
+      "limitations": [
+        "Trips, attractions, hours and costs are randomly generated; real catalogues are smaller and less varied.",
+        "Travel times are the planner's own estimates (great-circle x 1.3 / 30 km/h): the same model is used to build and to judge.",
+        "The validator is the planner's own rule set, so zero violations for validated_planner measures consistency, not real-world feasibility.",
+        "LLM-assisted planning is not benchmarked: it needs live credentials and is non-deterministic."
+      ],
+      "methods": {
+        "nearest_neighbour": {
+          "budget_deviation_pct": {
+            "ci95": [
+              -20.74826666666667,
+              -15.0892
+            ],
+            "mean": -17.9186
+          },
+          "has_violation": {
+            "ci95": [
+              0.66,
+              0.7633333333333333
+            ],
+            "mean": 0.71
+          },
+          "latency_ms": {
+            "ci95": [
+              0.022645156702007323,
+              0.025656430031328153
+            ],
+            "mean": 0.024143776693866432
+          },
+          "n_activities": {
+            "ci95": [
+              7.32,
+              8.07
+            ],
+            "mean": 7.69
+          },
+          "over_budget": {
+            "ci95": [
+              0.23666666666666666,
+              0.3433333333333333
+            ],
+            "mean": 0.29
+          },
+          "travel_min": {
+            "ci95": [
+              90.30333333333333,
+              99.29333333333334
+            ],
+            "mean": 94.68
+          },
+          "utility": {
+            "ci95": [
+              4.889996666666667,
+              5.2780933333333335
+            ],
+            "mean": 5.077096666666666
+          },
+          "v_budget": {
+            "ci95": [
+              0.23666666666666666,
+              0.3433333333333333
+            ],
+            "mean": 0.29
+          },
+          "v_day_overrun": {
+            "ci95": [
+              0.17,
+              0.27
+            ],
+            "mean": 0.22
+          },
+          "v_max_per_day": {
+            "ci95": [
+              0.0,
+              0.0
+            ],
+            "mean": 0.0
+          },
+          "v_opening_hours": {
+            "ci95": [
+              0.6833333333333333,
+              0.9
+            ],
+            "mean": 0.7866666666666666
+          },
+          "violations": {
+            "ci95": [
+              1.1666666666666667,
+              1.4433333333333334
+            ],
+            "mean": 1.2966666666666666
+          }
+        },
+        "simple_order": {
+          "budget_deviation_pct": {
+            "ci95": [
+              -20.74826666666667,
+              -15.0892
+            ],
+            "mean": -17.9186
+          },
+          "has_violation": {
+            "ci95": [
+              0.68,
+              0.7766666666666666
+            ],
+            "mean": 0.73
+          },
+          "latency_ms": {
+            "ci95": [
+              0.008747476543552088,
+              0.009593733241975618
+            ],
+            "mean": 0.009161369986638116
+          },
+          "n_activities": {
+            "ci95": [
+              7.32,
+              8.07
+            ],
+            "mean": 7.69
+          },
+          "over_budget": {
+            "ci95": [
+              0.23666666666666666,
+              0.3433333333333333
+            ],
+            "mean": 0.29
+          },
+          "travel_min": {
+            "ci95": [
+              129.69,
+              144.27666666666667
+            ],
+            "mean": 136.77666666666667
+          },
+          "utility": {
+            "ci95": [
+              4.889996666666667,
+              5.2780933333333335
+            ],
+            "mean": 5.077096666666666
+          },
+          "v_budget": {
+            "ci95": [
+              0.23666666666666666,
+              0.3433333333333333
+            ],
+            "mean": 0.29
+          },
+          "v_day_overrun": {
+            "ci95": [
+              0.21,
+              0.32
+            ],
+            "mean": 0.2633333333333333
+          },
+          "v_max_per_day": {
+            "ci95": [
+              0.0,
+              0.0
+            ],
+            "mean": 0.0
+          },
+          "v_opening_hours": {
+            "ci95": [
+              0.8233333333333334,
+              1.08
+            ],
+            "mean": 0.95
+          },
+          "violations": {
+            "ci95": [
+              1.3433333333333333,
+              1.6566666666666667
+            ],
+            "mean": 1.5033333333333334
+          }
+        },
+        "validated_planner": {
+          "budget_deviation_pct": {
+            "ci95": [
+              -24.569266666666667,
+              -20.525166666666667
+            ],
+            "mean": -22.553633333333334
+          },
+          "has_violation": {
+            "ci95": [
+              0.0,
+              0.0
+            ],
+            "mean": 0.0
+          },
+          "latency_ms": {
+            "ci95": [
+              0.07645720015716506,
+              0.08753596359989994
+            ],
+            "mean": 0.08169013342315641
+          },
+          "n_activities": {
+            "ci95": [
+              8.06,
+              8.86
+            ],
+            "mean": 8.446666666666667
+          },
+          "over_budget": {
+            "ci95": [
+              0.0,
+              0.0
+            ],
+            "mean": 0.0
+          },
+          "travel_min": {
+            "ci95": [
+              99.4,
+              110.63666666666667
+            ],
+            "mean": 105.08333333333333
+          },
+          "utility": {
+            "ci95": [
+              4.69872,
+              5.073493333333333
+            ],
+            "mean": 4.8740266666666665
+          },
+          "v_budget": {
+            "ci95": [
+              0.0,
+              0.0
+            ],
+            "mean": 0.0
+          },
+          "v_day_overrun": {
+            "ci95": [
+              0.0,
+              0.0
+            ],
+            "mean": 0.0
+          },
+          "v_max_per_day": {
+            "ci95": [
+              0.0,
+              0.0
+            ],
+            "mean": 0.0
+          },
+          "v_opening_hours": {
+            "ci95": [
+              0.0,
+              0.0
+            ],
+            "mean": 0.0
+          },
+          "violations": {
+            "ci95": [
+              0.0,
+              0.0
+            ],
+            "mean": 0.0
+          }
+        }
+      },
+      "n_bootstrap": 1000,
+      "paired_differences": {
+        "nearest_neighbour - simple_order (has_violation)": {
+          "ci95": [
+            -0.06,
+            0.02
+          ],
+          "mean": -0.02,
+          "n": 300
+        },
+        "nearest_neighbour - simple_order (n_activities)": {
+          "ci95": [
+            0.0,
+            0.0
+          ],
+          "mean": 0.0,
+          "n": 300
+        },
+        "nearest_neighbour - simple_order (over_budget)": {
+          "ci95": [
+            0.0,
+            0.0
+          ],
+          "mean": 0.0,
+          "n": 300
+        },
+        "nearest_neighbour - simple_order (utility)": {
+          "ci95": [
+            0.0,
+            0.0
+          ],
+          "mean": 0.0,
+          "n": 300
+        },
+        "nearest_neighbour - simple_order (violations)": {
+          "ci95": [
+            -0.3233333333333333,
+            -0.09
+          ],
+          "mean": -0.20666666666666667,
+          "n": 300
+        },
+        "validated_planner - simple_order (has_violation)": {
+          "ci95": [
+            -0.7766666666666666,
+            -0.68
+          ],
+          "mean": -0.73,
+          "n": 300
+        },
+        "validated_planner - simple_order (n_activities)": {
+          "ci95": [
+            0.5933333333333334,
+            0.9266666666666666
+          ],
+          "mean": 0.7566666666666667,
+          "n": 300
+        },
+        "validated_planner - simple_order (over_budget)": {
+          "ci95": [
+            -0.3433333333333333,
+            -0.23666666666666666
+          ],
+          "mean": -0.29,
+          "n": 300
+        },
+        "validated_planner - simple_order (utility)": {
+          "ci95": [
+            -0.29336,
+            -0.10890000000000001
+          ],
+          "mean": -0.20307,
+          "n": 300
+        },
+        "validated_planner - simple_order (violations)": {
+          "ci95": [
+            -1.6566666666666667,
+            -1.3433333333333333
+          ],
+          "mean": -1.5033333333333334,
+          "n": 300
+        }
+      }
+    },
+    {
+      "dataset": {
+        "n_attractions": 14,
+        "n_trips": 300,
+        "seed": 46,
+        "tight_budget_fraction": 0.3,
+        "unknown_cost_fraction": 0.4,
+        "verified_hours_fraction": 0.5
+      },
+      "label": "SYNTHETIC experiment: generated trips, not real users or live data. See docs/research/ITINERARY_EVALUATION.md.",
+      "limitations": [
+        "Trips, attractions, hours and costs are randomly generated; real catalogues are smaller and less varied.",
+        "Travel times are the planner's own estimates (great-circle x 1.3 / 30 km/h): the same model is used to build and to judge.",
+        "The validator is the planner's own rule set, so zero violations for validated_planner measures consistency, not real-world feasibility.",
+        "LLM-assisted planning is not benchmarked: it needs live credentials and is non-deterministic."
+      ],
+      "methods": {
+        "nearest_neighbour": {
+          "budget_deviation_pct": {
+            "ci95": [
+              -21.2664,
+              -15.535466666666668
+            ],
+            "mean": -18.444266666666667
+          },
+          "has_violation": {
+            "ci95": [
+              0.6166666666666667,
+              0.7233333333333334
+            ],
+            "mean": 0.67
+          },
+          "latency_ms": {
+            "ci95": [
+              0.023109763036093984,
+              0.02625515646892988
+            ],
+            "mean": 0.024701393134212896
+          },
+          "n_activities": {
+            "ci95": [
+              7.23,
+              7.99
+            ],
+            "mean": 7.6
+          },
+          "over_budget": {
+            "ci95": [
+              0.23,
+              0.33
+            ],
+            "mean": 0.27666666666666667
+          },
+          "travel_min": {
+            "ci95": [
+              87.70333333333333,
+              96.57333333333334
+            ],
+            "mean": 92.02333333333333
+          },
+          "utility": {
+            "ci95": [
+              4.78956,
+              5.176423333333333
+            ],
+            "mean": 4.976453333333333
+          },
+          "v_budget": {
+            "ci95": [
+              0.23,
+              0.33
+            ],
+            "mean": 0.27666666666666667
+          },
+          "v_day_overrun": {
+            "ci95": [
+              0.18333333333333332,
+              0.29333333333333333
+            ],
+            "mean": 0.23666666666666666
+          },
+          "v_max_per_day": {
+            "ci95": [
+              0.0,
+              0.0
+            ],
+            "mean": 0.0
+          },
+          "v_opening_hours": {
+            "ci95": [
+              0.6566666666666666,
+              0.88
+            ],
+            "mean": 0.7666666666666667
+          },
+          "violations": {
+            "ci95": [
+              1.1433333333333333,
+              1.4266666666666667
+            ],
+            "mean": 1.28
+          }
+        },
+        "simple_order": {
+          "budget_deviation_pct": {
+            "ci95": [
+              -21.2664,
+              -15.535466666666668
+            ],
+            "mean": -18.444266666666667
+          },
+          "has_violation": {
+            "ci95": [
+              0.6466666666666666,
+              0.75
+            ],
+            "mean": 0.7
+          },
+          "latency_ms": {
+            "ci95": [
+              0.008652886560109133,
+              0.00947527004124519
+            ],
+            "mean": 0.009060403366068689
+          },
+          "n_activities": {
+            "ci95": [
+              7.23,
+              7.99
+            ],
+            "mean": 7.6
+          },
+          "over_budget": {
+            "ci95": [
+              0.23,
+              0.33
+            ],
+            "mean": 0.27666666666666667
+          },
+          "travel_min": {
+            "ci95": [
+              124.22333333333333,
+              138.59
+            ],
+            "mean": 131.06333333333333
+          },
+          "utility": {
+            "ci95": [
+              4.78956,
+              5.176423333333333
+            ],
+            "mean": 4.976453333333333
+          },
+          "v_budget": {
+            "ci95": [
+              0.23,
+              0.33
+            ],
+            "mean": 0.27666666666666667
+          },
+          "v_day_overrun": {
+            "ci95": [
+              0.22666666666666666,
+              0.35333333333333333
+            ],
+            "mean": 0.2866666666666667
+          },
+          "v_max_per_day": {
+            "ci95": [
+              0.0,
+              0.0
+            ],
+            "mean": 0.0
+          },
+          "v_opening_hours": {
+            "ci95": [
+              0.7033333333333334,
+              0.9433333333333334
+            ],
+            "mean": 0.82
+          },
+          "violations": {
+            "ci95": [
+              1.2333333333333334,
+              1.5333333333333334
+            ],
+            "mean": 1.3833333333333333
+          }
+        },
+        "validated_planner": {
+          "budget_deviation_pct": {
+            "ci95": [
+              -25.104366666666667,
+              -21.21163333333333
+            ],
+            "mean": -23.161433333333335
+          },
+          "has_violation": {
+            "ci95": [
+              0.0,
+              0.0
+            ],
+            "mean": 0.0
+          },
+          "latency_ms": {
+            "ci95": [
+              0.07310772999820377,
+              0.08358336002856959
+            ],
+            "mean": 0.07814976665637612
+          },
+          "n_activities": {
+            "ci95": [
+              8.023333333333333,
+              8.876666666666667
+            ],
+            "mean": 8.456666666666667
+          },
+          "over_budget": {
+            "ci95": [
+              0.0,
+              0.0
+            ],
+            "mean": 0.0
+          },
+          "travel_min": {
+            "ci95": [
+              94.32333333333334,
+              105.12
+            ],
+            "mean": 99.85
+          },
+          "utility": {
+            "ci95": [
+              4.67134,
+              5.067363333333334
+            ],
+            "mean": 4.8616633333333334
+          },
+          "v_budget": {
+            "ci95": [
+              0.0,
+              0.0
+            ],
+            "mean": 0.0
+          },
+          "v_day_overrun": {
+            "ci95": [
+              0.0,
+              0.0
+            ],
+            "mean": 0.0
+          },
+          "v_max_per_day": {
+            "ci95": [
+              0.0,
+              0.0
+            ],
+            "mean": 0.0
+          },
+          "v_opening_hours": {
+            "ci95": [
+              0.0,
+              0.0
+            ],
+            "mean": 0.0
+          },
+          "violations": {
+            "ci95": [
+              0.0,
+              0.0
+            ],
+            "mean": 0.0
+          }
+        }
+      },
+      "n_bootstrap": 1000,
+      "paired_differences": {
+        "nearest_neighbour - simple_order (has_violation)": {
+          "ci95": [
+            -0.07,
+            0.013333333333333334
+          ],
+          "mean": -0.03,
+          "n": 300
+        },
+        "nearest_neighbour - simple_order (n_activities)": {
+          "ci95": [
+            0.0,
+            0.0
+          ],
+          "mean": 0.0,
+          "n": 300
+        },
+        "nearest_neighbour - simple_order (over_budget)": {
+          "ci95": [
+            0.0,
+            0.0
+          ],
+          "mean": 0.0,
+          "n": 300
+        },
+        "nearest_neighbour - simple_order (utility)": {
+          "ci95": [
+            0.0,
+            0.0
+          ],
+          "mean": 0.0,
+          "n": 300
+        },
+        "nearest_neighbour - simple_order (violations)": {
+          "ci95": [
+            -0.21,
+            0.01
+          ],
+          "mean": -0.10333333333333333,
+          "n": 300
+        },
+        "validated_planner - simple_order (has_violation)": {
+          "ci95": [
+            -0.75,
+            -0.6466666666666666
+          ],
+          "mean": -0.7,
+          "n": 300
+        },
+        "validated_planner - simple_order (n_activities)": {
+          "ci95": [
+            0.69,
+            1.0233333333333334
+          ],
+          "mean": 0.8566666666666667,
+          "n": 300
+        },
+        "validated_planner - simple_order (over_budget)": {
+          "ci95": [
+            -0.33,
+            -0.23
+          ],
+          "mean": -0.27666666666666667,
+          "n": 300
+        },
+        "validated_planner - simple_order (utility)": {
+          "ci95": [
+            -0.20735333333333333,
+            -0.027196666666666668
+          ],
+          "mean": -0.11478999999999996,
+          "n": 300
+        },
+        "validated_planner - simple_order (violations)": {
+          "ci95": [
+            -1.5333333333333334,
+            -1.2333333333333334
+          ],
+          "mean": -1.3833333333333333,
+          "n": 300
+        }
+      }
+    }
+  ],
+  "seeds": [
+    42,
+    43,
+    44,
+    45,
+    46
+  ]
+}

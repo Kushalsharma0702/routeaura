@@ -1,12 +1,15 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
-import { ArrowLeft, Calendar, Clock, MapPin, Sparkles, Sun, Wallet } from 'lucide-react';
+import { ArrowLeft, Bookmark, BookmarkCheck, Calendar, Clock, MapPin, Sparkles, Sun, ThumbsUp, Wallet } from 'lucide-react';
+import { toast } from 'sonner';
+import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Skeleton } from '@/components/ui/skeleton';
 import ImageGallery from '@/components/ImageGallery';
 import { EmptyState, ErrorState } from '@/components/QueryState';
 import { ApiError } from '@/lib/api/client';
 import { useAttractions, useCategories, useDestination } from '@/hooks/useCatalog';
+import { useInteraction, useItemState } from '@/hooks/useRecommendations';
 import { formatDistance, formatDuration, formatMinor, seasonLabel } from '@/lib/format';
 
 const RADII = ['all', '5', '10', '25', '50'];
@@ -18,6 +21,14 @@ export default function DestinationDetail() {
   const [category, setCategory] = useState('all');
   const d = dest.data;
   const allCategories = useCategories();
+  const state = useItemState('destination', d?.id);
+  const interaction = useInteraction();
+  const viewedId = d?.id;
+  // one 'view' signal per visit; the server also de-duplicates repeated views within minutes
+  useEffect(() => { if (viewedId) interaction.mutate({ kind: 'destination', id: viewedId, type: 'view', source: 'detail' }); // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [viewedId]);
+  const toggle = (type: 'save' | 'unsave' | 'like' | 'reaction_clear') =>
+    interaction.mutate({ kind: 'destination', id: d!.id, type, source: 'detail' }, { onError: () => toast.error('Could not update. Please try again.') });
 
   const attractions = useAttractions({
     destination_id: d?.id, category: category === 'all' ? undefined : category, page_size: 50,
@@ -36,9 +47,21 @@ export default function DestinationDetail() {
   return (
     <div className="space-y-6 pb-24 lg:pb-0">
       <BackLink />
-      <div>
-        <h1 className="text-3xl font-display font-bold text-foreground flex items-center gap-2"><MapPin className="w-6 h-6 text-primary" />{d.name}</h1>
-        <p className="text-muted-foreground">{[d.region, d.country].filter(Boolean).join(', ')}</p>
+      <div className="flex flex-wrap items-start justify-between gap-3">
+        <div>
+          <h1 className="text-3xl font-display font-bold text-foreground flex items-center gap-2"><MapPin className="w-6 h-6 text-primary" />{d.name}</h1>
+          <p className="text-muted-foreground">{[d.region, d.country].filter(Boolean).join(', ')}</p>
+        </div>
+        <div className="flex gap-2">
+          <Button variant={state.data?.saved ? 'secondary' : 'outline'} className="gap-2" aria-pressed={!!state.data?.saved} disabled={interaction.isPending || !state.data}
+            onClick={() => toggle(state.data?.saved ? 'unsave' : 'save')}>
+            {state.data?.saved ? <BookmarkCheck className="w-4 h-4" /> : <Bookmark className="w-4 h-4" />}{state.data?.saved ? 'Saved' : 'Save'}
+          </Button>
+          <Button variant={state.data?.liked ? 'secondary' : 'outline'} className="gap-2" aria-pressed={!!state.data?.liked} disabled={interaction.isPending || !state.data}
+            onClick={() => toggle(state.data?.liked ? 'reaction_clear' : 'like')}>
+            <ThumbsUp className="w-4 h-4" />{state.data?.liked ? 'Liked' : 'Like'}
+          </Button>
+        </div>
       </div>
 
       {d.images.length > 0 && <ImageGallery images={d.images} title={d.name} />}

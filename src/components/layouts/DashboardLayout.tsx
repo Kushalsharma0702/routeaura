@@ -20,7 +20,7 @@ import {
 } from '@/components/ui/dropdown-menu';
 import {
   Compass, LayoutDashboard, Package, BookOpen, Users, MapPin, Menu, X,
-  LogOut, User, ChevronDown, Globe, CalendarDays, Search, Bell, Route,
+  LogOut, User, ChevronDown, Globe, CalendarDays, Search, Bell, Route, Sparkles, Wand2, Plane,
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import MobileBottomNav from './MobileBottomNav';
@@ -44,6 +44,9 @@ const adminNav: NavItem[] = [
 // Navigation items for regular users
 const clientNav: NavItem[] = [
   { label: 'Dashboard', href: '/dashboard', icon: LayoutDashboard },
+  { label: 'For You', href: '/dashboard/recommendations', icon: Sparkles },
+  { label: 'Plan a Trip', href: '/dashboard/planner', icon: Wand2 },
+  { label: 'My Trips', href: '/dashboard/itineraries', icon: Plane },
   { label: 'Destinations', href: '/dashboard/destinations', icon: MapPin },
   { label: 'Browse Packages', href: '/dashboard/packages', icon: Globe },
   { label: 'My Bookings', href: '/dashboard/bookings', icon: CalendarDays },

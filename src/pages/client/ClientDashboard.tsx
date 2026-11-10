@@ -12,6 +12,7 @@ import StatusBadge from '@/components/StatusBadge';
 import { bookings, travelPackages, formatINR } from '@/data/mockData';
 import { useAuth } from '@/contexts/AuthContext';
 import { motion } from 'framer-motion';
+import RecommendationsSection from '@/components/recommendations/RecommendationsSection';
 
 export default function ClientDashboard() {
   const { user } = useAuth();
@@ -34,6 +35,8 @@ export default function ClientDashboard() {
         <StatCard title="Pending" value={pending.length} icon={Clock} variant="warning" />
         <StatCard title="Destinations" value={new Set(myBookings.map(b => b.packageName)).size} icon={MapPin} variant="success" />
       </div>
+
+      <RecommendationsSection />
 
       {/* Upcoming Trips */}
       {upcoming.length > 0 && (

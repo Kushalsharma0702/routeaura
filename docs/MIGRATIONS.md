@@ -14,6 +14,8 @@ uv run alembic revision --autogenerate -m "describe change" --rev-id 0004   # th
 | 0001 | users, user_preferences, refresh_tokens, audit_logs |
 | 0002 | attraction_categories, destinations, destination_categories, attractions (CHECK constraints on coordinates, cost, duration, season) |
 | 0003 | **Optional PostGIS**: if the server offers the extension, enables it and adds generated `location geography(Point,4326)` columns with GiST indexes on destinations and attractions. A no-op otherwise. |
+| 0004 | `user_interactions`, `recommendation_runs`, `recommendation_items`, `recommendation_feedback` |
+| 0005 | `itineraries`, `itinerary_activities`, `itinerary_versions` |
 
 ## PostGIS
 - **Decision:** PostGIS is used where available; plain `latitude`/`longitude` columns stay the source of truth, and a portable haversine backend serves everything else (`SPATIAL_BACKEND=auto|postgis|haversine`, default `auto`). See `TECHNICAL_DECISIONS.md` #13.
