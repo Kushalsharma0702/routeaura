@@ -25,6 +25,9 @@ class Settings(BaseSettings):
     max_request_bytes: int = 1_000_000
     rate_limit_enabled: bool = True
 
+    # Spatial queries: 'auto' uses PostGIS when installed, else the portable haversine backend
+    spatial_backend: Literal["auto", "postgis", "haversine"] = "auto"
+
     # Dev-only seed accounts (ignored unless environment == development)
     seed_admin_email: str | None = None
     seed_admin_password: str | None = None

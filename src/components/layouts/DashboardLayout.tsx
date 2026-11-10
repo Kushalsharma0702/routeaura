@@ -44,6 +44,7 @@ const adminNav: NavItem[] = [
 // Navigation items for regular users
 const clientNav: NavItem[] = [
   { label: 'Dashboard', href: '/dashboard', icon: LayoutDashboard },
+  { label: 'Destinations', href: '/dashboard/destinations', icon: MapPin },
   { label: 'Browse Packages', href: '/dashboard/packages', icon: Globe },
   { label: 'My Bookings', href: '/dashboard/bookings', icon: CalendarDays },
   { label: 'Profile', href: '/dashboard/profile', icon: User },

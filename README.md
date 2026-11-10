@@ -208,7 +208,8 @@ createdb routeaura && createdb routeaura_test
 cp .env.example .env            # then set JWT_SECRET (see comment inside)
 uv sync
 uv run alembic upgrade head
-uv run python -m app.scripts.seed_dev   # dev-only seed accounts
+uv run python -m app.scripts.seed_dev      # dev-only seed accounts
+uv run python -m app.scripts.seed_catalog  # demo destinations/attractions (optional)
 uv run uvicorn app.main:app --reload --port 8000   # API docs: http://localhost:8000/docs
 
 # 2. Frontend (new terminal, repo root)
@@ -219,4 +220,4 @@ npm run dev                     # http://localhost:8080 (proxies /api to :8000)
 Tests: `cd backend && uv run pytest -q` and `npm test`.
 Docker: copy `.env.example` to `.env`, fill the secrets, then `docker compose up --build` (not yet verified end to end, see `docs/IMPLEMENTATION_STATUS.md`).
 
-Project documentation lives in [`docs/`](docs/): audit, architecture, plan, decisions and current status.
+Project documentation lives in [`docs/`](docs/): audit, architecture, plan, decisions, [API contract](docs/API.md), [migrations and PostGIS](docs/MIGRATIONS.md) and current status.

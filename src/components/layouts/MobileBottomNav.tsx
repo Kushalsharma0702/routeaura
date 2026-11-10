@@ -23,7 +23,8 @@ const adminNav: NavItem[] = [
 
 const clientNav: NavItem[] = [
   { label: 'Home', href: '/dashboard', icon: LayoutDashboard },
-  { label: 'Explore', href: '/dashboard/packages', icon: Globe },
+  { label: 'Places', href: '/dashboard/destinations', icon: MapPin },
+  { label: 'Packages', href: '/dashboard/packages', icon: Globe },
   { label: 'Bookings', href: '/dashboard/bookings', icon: CalendarDays },
   { label: 'Profile', href: '/dashboard/profile', icon: User },
 ];

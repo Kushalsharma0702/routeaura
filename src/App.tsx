@@ -7,32 +7,37 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
 // React Router for navigation
+import { Suspense, lazy } from "react";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 
 // Authentication context for managing user login/logout
 import { AuthProvider, useAuth } from "@/contexts/AuthContext";
+import { ApiError } from "@/lib/api/client";
 
 // Page Components
-import Index from "./pages/Index";
-import NotFound from "./pages/NotFound";
-import Login from "./pages/Login";
+const Index = lazy(() => import("./pages/Index"));
+const NotFound = lazy(() => import("./pages/NotFound"));
+const Login = lazy(() => import("./pages/Login"));
 
 // Layout wrapper for dashboard pages
 import DashboardLayout from "./components/layouts/DashboardLayout";
 
 // Admin Pages - Only accessible to admin users
-import AdminDashboard from "./pages/admin/AdminDashboard";
-import ManagePackages from "./pages/admin/ManagePackages";
-import ManageBookings from "./pages/admin/ManageBookings";
-import ManageUsers from "./pages/admin/ManageUsers";
-import ManageDestinations from "./pages/admin/ManageDestinations";
-import ManageRoutes from "./pages/admin/ManageRoutes";
+const AdminDashboard = lazy(() => import("./pages/admin/AdminDashboard"));
+const ManagePackages = lazy(() => import("./pages/admin/ManagePackages"));
+const ManageBookings = lazy(() => import("./pages/admin/ManageBookings"));
+const ManageUsers = lazy(() => import("./pages/admin/ManageUsers"));
+const ManageDestinations = lazy(() => import("./pages/admin/ManageDestinations"));
+const ManageRoutes = lazy(() => import("./pages/admin/ManageRoutes"));
 
 // Client Pages - Accessible to regular users
-import ClientDashboard from "./pages/client/ClientDashboard";
-import BrowsePackages from "./pages/client/BrowsePackages";
-import MyBookings from "./pages/client/MyBookings";
-import ClientProfile from "./pages/client/ClientProfile";
+const ClientDashboard = lazy(() => import("./pages/client/ClientDashboard"));
+const BrowsePackages = lazy(() => import("./pages/client/BrowsePackages"));
+const MyBookings = lazy(() => import("./pages/client/MyBookings"));
+const ClientProfile = lazy(() => import("./pages/client/ClientProfile"));
+const ManageAttractions = lazy(() => import("./pages/admin/ManageAttractions"));
+const BrowseDestinations = lazy(() => import("./pages/client/BrowseDestinations"));
+const DestinationDetail = lazy(() => import("./pages/client/DestinationDetail"));
 
 /**
  * Initialize React Query client with optimized caching configuration
@@ -46,7 +51,8 @@ const queryClient = new QueryClient({
     queries: {
       staleTime: 5 * 60 * 1000, // 5 minutes - data considered fresh
       gcTime: 10 * 60 * 1000, // 10 minutes - garbage collection time
-      retry: 2, // Retry failed requests twice
+      // Retry transient failures only; 4xx responses (validation, auth, not found) will not change on retry
+      retry: (count: number, error: unknown) => !(error instanceof ApiError && error.status < 500) && count < 2,
       refetchOnWindowFocus: true, // Refetch when user returns to tab
       refetchOnReconnect: true, // Refetch when internet reconnects
       refetchOnMount: true, // Refetch when component mounts
@@ -100,11 +106,14 @@ const AppRoutes = () => (
     <Route path="/admin/bookings" element={<ProtectedRoute role="admin"><ManageBookings /></ProtectedRoute>} />
     <Route path="/admin/users" element={<ProtectedRoute role="admin"><ManageUsers /></ProtectedRoute>} />
     <Route path="/admin/destinations" element={<ProtectedRoute role="admin"><ManageDestinations /></ProtectedRoute>} />
+    <Route path="/admin/destinations/:id/attractions" element={<ProtectedRoute role="admin"><ManageAttractions /></ProtectedRoute>} />
     <Route path="/admin/routes" element={<ProtectedRoute role="admin"><ManageRoutes /></ProtectedRoute>} />
 
     {/* Client Routes - Accessible by regular logged-in users */}
     <Route path="/dashboard" element={<ProtectedRoute role="client"><ClientDashboard /></ProtectedRoute>} />
     <Route path="/dashboard/packages" element={<ProtectedRoute role="client"><BrowsePackages /></ProtectedRoute>} />
+    <Route path="/dashboard/destinations" element={<ProtectedRoute role="client"><BrowseDestinations /></ProtectedRoute>} />
+    <Route path="/dashboard/destinations/:ref" element={<ProtectedRoute role="client"><DestinationDetail /></ProtectedRoute>} />
     <Route path="/dashboard/bookings" element={<ProtectedRoute role="client"><MyBookings /></ProtectedRoute>} />
     <Route path="/dashboard/profile" element={<ProtectedRoute role="client"><ClientProfile /></ProtectedRoute>} />
 
@@ -133,7 +142,9 @@ const App = () => (
       
       <BrowserRouter>
         <AuthProvider>
-          <AppRoutes />
+          <Suspense fallback={<FullPageSpinner />}>
+            <AppRoutes />
+          </Suspense>
         </AuthProvider>
       </BrowserRouter>
     </TooltipProvider>

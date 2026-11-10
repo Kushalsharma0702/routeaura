@@ -70,20 +70,6 @@ export interface Booking {
 }
 
 /**
- * Destination Structure
- * Information about travel destinations
- */
-export interface Destination {
-  id: string;
-  name: string;
-  country: string;
-  description: string;
-  images: string[];
-  travelSeason: string;  // Best time to visit
-  attractions: string[];  // Popular places to visit
-}
-
-/**
  * Route Structure
  * Travel routes between locations
  */
@@ -182,44 +168,6 @@ export const travelPackages: TravelPackage[] = [
       'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=800',
     ],
     rating: 4.8, category: 'Beach', tags: ['Beach', 'Scuba Diving', 'Romantic'], visible: true,
-  },
-];
-
-/**
- * Popular Travel Destinations
- * Featured destinations with detailed information
- * Used in the destination management section
- */
-export const destinations: Destination[] = [
-  {
-    id: 'dest-1', name: 'Goa', country: 'India',
-    description: 'India\'s party capital with stunning beaches, Portuguese heritage, water sports, and a buzzing nightlife scene.',
-    images: ['https://images.unsplash.com/photo-1512343879784-a960bf40e7f2?w=800', 'https://images.unsplash.com/photo-1587922546307-776227941871?w=800'],
-    travelSeason: 'Oct - Mar', attractions: ['Baga Beach', 'Basilica of Bom Jesus', 'Dudhsagar Falls', 'Fort Aguada'],
-  },
-  {
-    id: 'dest-2', name: 'Manali', country: 'India',
-    description: 'A Himalayan hill station with snow-capped peaks, adventure sports, and lush green valleys.',
-    images: ['https://images.unsplash.com/photo-1626621341517-bbf3d9990a23?w=800', 'https://images.unsplash.com/photo-1585409677983-0f6c41ca9c3b?w=800'],
-    travelSeason: 'Oct - Jun', attractions: ['Rohtang Pass', 'Solang Valley', 'Hadimba Temple', 'Old Manali'],
-  },
-  {
-    id: 'dest-3', name: 'Jaipur', country: 'India',
-    description: 'The Pink City — a vibrant blend of majestic forts, colourful bazaars, and royal Rajasthani culture.',
-    images: ['https://images.unsplash.com/photo-1599661046289-e31897846e41?w=800', 'https://images.unsplash.com/photo-1524492412937-b28074a5d7da?w=800'],
-    travelSeason: 'Oct - Mar', attractions: ['Hawa Mahal', 'Amber Fort', 'City Palace', 'Jantar Mantar'],
-  },
-  {
-    id: 'dest-4', name: 'Kerala', country: 'India',
-    description: 'God\'s Own Country — serene backwaters, lush tea gardens, Ayurveda, and tropical beaches.',
-    images: ['https://images.unsplash.com/photo-1602216056096-3b40cc0c9944?w=800', 'https://images.unsplash.com/photo-1609920658906-8223bd289001?w=800'],
-    travelSeason: 'Sep - Mar', attractions: ['Alleppey Backwaters', 'Munnar Tea Gardens', 'Periyar Wildlife', 'Kovalam Beach'],
-  },
-  {
-    id: 'dest-5', name: 'Ladakh', country: 'India',
-    description: 'Land of high passes — stark mountains, ancient monasteries, and turquoise Pangong Lake.',
-    images: ['https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=800&q=80', 'https://images.unsplash.com/photo-1506197603052-3cc9c3a201bd?w=800&q=80'],
-    travelSeason: 'Jun - Sep', attractions: ['Pangong Lake', 'Nubra Valley', 'Thiksey Monastery', 'Khardung La'],
   },
 ];
 

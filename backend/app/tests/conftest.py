@@ -38,7 +38,9 @@ def migrated_db():
 @pytest.fixture(autouse=True)
 def clean_db(migrated_db):
     with get_engine().begin() as conn:
-        conn.execute(text("TRUNCATE users, user_preferences, refresh_tokens, audit_logs CASCADE"))
+        conn.execute(text(
+            "TRUNCATE users, user_preferences, refresh_tokens, audit_logs, destination_categories, "
+            "attractions, destinations, attraction_categories CASCADE"))
     reset_rate_limits()
     yield
 
@@ -78,3 +80,21 @@ def admin_token(client, db):
 
 def auth(token: str) -> dict:
     return {"Authorization": f"Bearer {token}"}
+
+
+@pytest.fixture
+def seeded(db):
+    """The demo catalogue (5 destinations / 20 attractions), published."""
+    from app.scripts.seed_catalog import seed
+
+    seed(db)
+    return db
+
+
+@pytest.fixture
+def traveler_token(traveler):
+    return traveler["access_token"]
+
+
+def pytest_collection_modifyitems(config, items):
+    pass

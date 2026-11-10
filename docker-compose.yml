@@ -1,7 +1,7 @@
 # docker compose up --build   (requires a root .env: see .env.example)
 services:
   db:
-    image: postgres:16-alpine
+    image: postgis/postgis:16-3.4   # PostGIS enabled by migration 0003 (amd64 image; emulated on Apple silicon)
     environment:
       POSTGRES_DB: routeaura
       POSTGRES_USER: routeaura
