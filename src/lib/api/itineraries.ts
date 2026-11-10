@@ -10,7 +10,7 @@ export interface Activity {
   cost_minor: number | null; cost_total_minor: number | null;
   hours_status: 'verified_open' | 'verified_closed' | 'unknown'; source: string; score: number | null;
   explanation: { reasons?: string[]; cautions?: string[]; missing?: string[]; llm?: { theme?: string; rationale?: string } };
-  notes: string | null; warnings: string[];
+  notes: string | null; warnings: string[]; locked: boolean;
 }
 export interface DayPlan { day_number: number; date: string | null; activities: Activity[]; lunch_start_min: number | null; ends_at: string | null }
 export interface Violation { type: string; day: number | null; activity_id: string | null; message: string }
@@ -26,7 +26,7 @@ export interface Itinerary {
   start_location: { name: string; lat: number; lng: number } | null;
   generation_source: 'llm' | 'deterministic_fallback' | 'manual';
   generation_info: { notes?: string[]; steps?: { step: string; status: string; ms: number; detail: string }[]; dropped?: { attraction: string; reason: string }[];
-    llm?: { provider: string; model: string; error?: string }; travel_times?: string };
+    llm?: { provider: string; model: string; error?: string }; travel_times?: string; routing?: { source: string; notes: string[]; live_traffic: boolean } };
   current_version: number; day_plans: DayPlan[]; budget: Budget; violations: Violation[]; created_at: string; updated_at: string;
 }
 export interface ItinerarySummary {
@@ -52,7 +52,7 @@ export const itinerariesApi = {
     apiFetch<Itinerary>(`${base(id)}/regenerate`, { method: 'POST', body }),
   addActivity: (id: string, body: { attraction_id: string; day_number: number; position?: number; duration_min?: number }) =>
     apiFetch<Itinerary>(`${base(id)}/activities`, { method: 'POST', body }),
-  updateActivity: (id: string, aid: string, body: { duration_min?: number; notes?: string | null }) =>
+  updateActivity: (id: string, aid: string, body: { duration_min?: number; notes?: string | null; locked?: boolean }) =>
     apiFetch<Itinerary>(`${base(id)}/activities/${aid}`, { method: 'PATCH', body }),
   removeActivity: (id: string, aid: string) => apiFetch<Itinerary>(`${base(id)}/activities/${aid}`, { method: 'DELETE' }),
   reorder: (id: string, days: { day_number: number; activity_ids: string[] }[]) =>

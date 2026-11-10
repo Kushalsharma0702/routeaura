@@ -13,6 +13,8 @@ from sqlalchemy.orm import Session
 from app.core.errors import AppError, not_found
 from app.integrations.llm.base import LLMClient, LLMError
 from app.integrations.llm.providers import get_llm
+from app.integrations.routing.base import RoutingProvider
+from app.integrations.routing.providers import get_routing
 from app.models.catalog import Attraction, Destination
 from app.models.itinerary import Itinerary, ItineraryActivity, ItineraryVersion
 from app.models.user import User
@@ -63,9 +65,10 @@ def _candidate(
 
 
 class ItineraryService:
-    def __init__(self, db: Session, llm: LLMClient | None = None):
+    def __init__(self, db: Session, llm: LLMClient | None = None, routing: RoutingProvider | None = None):
         self.db = db
         self.llm = llm if llm is not None else get_llm()
+        self.routing = routing if routing is not None else get_routing()
         self.rec = RecommendationService(db)
 
     # ------------------------------------------------------------------ access
@@ -184,6 +187,7 @@ class ItineraryService:
         self.db.add(it)
         self.db.flush()
         self._persist_activities(it)
+        self._reschedule(it)
         self._new_version(it, user, "Generated")
         t = time.perf_counter()
         self.db.commit()
@@ -335,11 +339,28 @@ class ItineraryService:
         del it._pending  # type: ignore[attr-defined]
 
     def _reschedule(self, it: Itinerary) -> None:
-        """Recompute start times/travel for every day from the current activity order (user order is kept)."""
+        """Recompute start times and legs for every day from the current activity order (the order is kept).
+        Legs come from the routing provider (or the labelled estimate); the source is stored on the itinerary."""
         d = self.db.get(Destination, it.destination_id)
         p = self._params(it, d)
+        acts_all = sorted(it.activities, key=lambda a: (a.day_number, a.position))
+        if acts_all:
+            from app.modules.routing.optimizer import leg_from_matrix
+
+            pts = [p.start] + [(float(a.attraction.latitude), float(a.attraction.longitude)) for a in acts_all]
+            matrix = self.routing.matrix(pts)
+            p.leg = leg_from_matrix(pts, matrix)
+            it.generation_info = {
+                **(it.generation_info or {}),
+                "routing": {
+                    "source": matrix.source,
+                    "notes": matrix.notes,
+                    "live_traffic": matrix.live_traffic,
+                    "fetched_at": matrix.fetched_at.isoformat(),
+                },
+            }
         by_day: dict[int, list[ItineraryActivity]] = {}
-        for a in sorted(it.activities, key=lambda a: (a.day_number, a.position)):
+        for a in acts_all:
             by_day.setdefault(a.day_number, []).append(a)
         for day, acts in by_day.items():
             cands = [_candidate(a.attraction, a.score or 0.0, a.duration_min, a.cost_minor) for a in acts]
@@ -526,6 +547,7 @@ class ItineraryService:
             it, d, self._attractions(d), steps, notes, use_llm=req.use_llm and self.llm.name != "none", user=user
         )
         self._persist_activities(it)
+        self._reschedule(it)
         self._new_version(it, user, "Regenerated")
         self.db.commit()
         it.generation_info = {**it.generation_info, "steps": steps}
@@ -555,6 +577,7 @@ class ItineraryService:
                 duration_min=data.duration_min or a.typical_duration_minutes,
                 cost_minor=a.estimated_cost_minor,
                 source="user",
+                locked=True,  # user-added activities are required: the optimizer never drops them
                 explanation={"reasons": ["Added by you."], "cautions": [], "missing": [], "notes": []},
             )
         )
@@ -596,6 +619,8 @@ class ItineraryService:
         changes = data.model_dump(exclude_unset=True)
         if changes.get("duration_min") is None and "duration_min" in changes:
             raise AppError(422, "validation_error", "duration_min cannot be null")
+        if changes.get("locked") is None and "locked" in changes:
+            raise AppError(422, "validation_error", "locked cannot be null")
         for k, v in changes.items():
             setattr(a, k, v)
         self._reschedule(it)
@@ -627,6 +652,24 @@ class ItineraryService:
         cands = {
             str(a.attraction_id): _candidate(a.attraction, a.score or 0.0, a.duration_min, a.cost_minor) for a in acts
         }
+        # Re-evaluate with the legs that were stored when the plan was last scheduled (no provider call on reads)
+        stored: dict[tuple, tuple[int, int]] = {}
+        for day in range(1, it.days + 1):
+            prev = p.start
+            for a in (x for x in acts if x.day_number == day):
+                here = (float(a.attraction.latitude), float(a.attraction.longitude))
+                stored[(round(prev[0], 6), round(prev[1], 6), round(here[0], 6), round(here[1], 6))] = (
+                    a.travel_m,
+                    a.travel_min,
+                )
+                prev = here
+
+        def stored_leg(a, b):
+            return stored.get((round(a[0], 6), round(a[1], 6), round(b[0], 6), round(b[1], 6))) or pl.travel(
+                a, b, p.speed_kmh
+            )
+
+        p.leg = stored_leg
         scheds = []
         warn: dict[uuid.UUID, list[str]] = {}
         for day in range(1, it.days + 1):
@@ -662,6 +705,8 @@ class ItineraryService:
                         end_time=_hhmm(end),
                         duration_min=a.duration_min,
                         travel_min=a.travel_min,
+                        travel_source=(it.generation_info or {}).get("routing", {}).get("source", "estimate"),
+                        locked=a.locked,
                         travel_m=a.travel_m,
                         wait_min=a.wait_min,
                         cost_minor=a.cost_minor,

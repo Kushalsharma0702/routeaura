@@ -1,0 +1,1883 @@
+{
+  "label": "SYNTHETIC experiment: generated trips and forecasts, not real users or live data. See docs/research/ROUTING_CONTEXT_EVALUATION.md.",
+  "runs": [
+    {
+      "context_adaptation": {
+        "cases": 200,
+        "issues_detected": 543,
+        "issues_without_alternative": 144,
+        "latency_ms": {
+          "max": 0.6532080005854368,
+          "mean": 0.12831188505515456,
+          "p50": 0.09025000326801091,
+          "p95": 0.3863749989250209
+        },
+        "note": "Pure engine only: no database, no provider call. Forecasts older than 180 min are ignored by design.",
+        "original_plans_with_violations": 0,
+        "proposals_built": 399,
+        "proposals_with_violations_feasibility_aware_choice": 204,
+        "proposals_with_violations_if_top_ranked_alternative_used": 256
+      },
+      "dataset": {
+        "graph_nodes": 80,
+        "n_attractions": 14,
+        "n_context_cases": 200,
+        "n_graphs": 20,
+        "n_trips": 60,
+        "seed": 42
+      },
+      "label": "SYNTHETIC experiment: generated trips and forecasts, not real users or live data. See docs/research/ROUTING_CONTEXT_EVALUATION.md.",
+      "limitations": [
+        "Travel times are the great-circle estimate (x1.3 at 30 km/h), used both to optimise and to judge: this measures ordering quality, not real road times.",
+        "OR-Tools default mode (greedy descent) is deterministic but not guaranteed optimal; no comparison to an exact solver beyond the small brute-force unit tests.",
+        "Original plans are the naive 'simple_order' builder, a weak baseline; improvements over a stronger heuristic would be smaller.",
+        "Context adaptation uses synthetic forecasts and measures the pure engine; database, provider and network latency are excluded.",
+        "Outputs are deterministic given the seed except latency fields."
+      ],
+      "route_optimization": {
+        "solver_status_counts": {
+          "ortools_free": {
+            "optimized": 60
+          },
+          "ortools_locked": {
+            "optimized": 54,
+            "relaxed": 6
+          }
+        },
+        "summary": {
+          "nearest_neighbour": {
+            "budget_deviation_pct": {
+              "ci95": [
+                -27.3225,
+                -12.0325
+              ],
+              "mean": -20.129666666666665
+            },
+            "distance_m": {
+              "ci95": [
+                44275.61666666667,
+                57246.183333333334
+              ],
+              "mean": 50615.75
+            },
+            "has_violation": {
+              "ci95": [
+                0.5666666666666667,
+                0.8
+              ],
+              "mean": 0.6833333333333333
+            },
+            "latency_ms": {
+              "ci95": [
+                0.02707563368555081,
+                0.03257708376622759
+              ],
+              "mean": 0.029851300132577308
+            },
+            "n_activities": {
+              "ci95": [
+                6.1,
+                7.75
+              ],
+              "mean": 6.9
+            },
+            "n_trips": 60,
+            "over_budget": {
+              "ci95": [
+                0.11666666666666667,
+                0.3333333333333333
+              ],
+              "mean": 0.21666666666666667
+            },
+            "travel_min": {
+              "ci95": [
+                88.75,
+                114.61666666666666
+              ],
+              "mean": 101.28333333333333
+            },
+            "utility": {
+              "ci95": [
+                4.161866666666667,
+                5.049266666666667
+              ],
+              "mean": 4.609016666666666
+            },
+            "violations": {
+              "ci95": [
+                0.9333333333333333,
+                1.55
+              ],
+              "mean": 1.2166666666666666
+            }
+          },
+          "original": {
+            "budget_deviation_pct": {
+              "ci95": [
+                -27.3225,
+                -12.0325
+              ],
+              "mean": -20.129666666666665
+            },
+            "distance_m": {
+              "ci95": [
+                53336.61666666667,
+                70099.5
+              ],
+              "mean": 61596.05
+            },
+            "has_violation": {
+              "ci95": [
+                0.5333333333333333,
+                0.7666666666666667
+              ],
+              "mean": 0.65
+            },
+            "latency_ms": {
+              "ci95": [
+                0.0,
+                0.0
+              ],
+              "mean": 0.0
+            },
+            "n_activities": {
+              "ci95": [
+                6.1,
+                7.75
+              ],
+              "mean": 6.9
+            },
+            "n_trips": 60,
+            "over_budget": {
+              "ci95": [
+                0.11666666666666667,
+                0.3333333333333333
+              ],
+              "mean": 0.21666666666666667
+            },
+            "travel_min": {
+              "ci95": [
+                106.91666666666667,
+                140.4
+              ],
+              "mean": 123.31666666666666
+            },
+            "utility": {
+              "ci95": [
+                4.161866666666667,
+                5.049266666666667
+              ],
+              "mean": 4.609016666666666
+            },
+            "violations": {
+              "ci95": [
+                0.8333333333333334,
+                1.3166666666666667
+              ],
+              "mean": 1.0666666666666667
+            }
+          },
+          "ortools_free": {
+            "budget_deviation_pct": {
+              "ci95": [
+                -31.624000000000002,
+                -21.497166666666665
+              ],
+              "mean": -26.822833333333335
+            },
+            "distance_m": {
+              "ci95": [
+                26767.066666666666,
+                34933.083333333336
+              ],
+              "mean": 30961.666666666668
+            },
+            "has_violation": {
+              "ci95": [
+                0.016666666666666666,
+                0.13333333333333333
+              ],
+              "mean": 0.06666666666666667
+            },
+            "latency_ms": {
+              "ci95": [
+                27.156029250788077,
+                58.348711900422735
+              ],
+              "mean": 40.66688338377086
+            },
+            "n_activities": {
+              "ci95": [
+                4.983333333333333,
+                6.866666666666666
+              ],
+              "mean": 5.916666666666667
+            },
+            "n_trips": 60,
+            "over_budget": {
+              "ci95": [
+                0.0,
+                0.0
+              ],
+              "mean": 0.0
+            },
+            "travel_min": {
+              "ci95": [
+                53.4,
+                69.91666666666667
+              ],
+              "mean": 61.983333333333334
+            },
+            "utility": {
+              "ci95": [
+                3.4311333333333334,
+                4.445766666666667
+              ],
+              "mean": 3.931166666666667
+            },
+            "violations": {
+              "ci95": [
+                0.016666666666666666,
+                0.13333333333333333
+              ],
+              "mean": 0.06666666666666667
+            }
+          },
+          "ortools_locked": {
+            "budget_deviation_pct": {
+              "ci95": [
+                -27.3225,
+                -12.0325
+              ],
+              "mean": -20.129666666666665
+            },
+            "distance_m": {
+              "ci95": [
+                34179.183333333334,
+                42248.23333333333
+              ],
+              "mean": 38193.63333333333
+            },
+            "has_violation": {
+              "ci95": [
+                0.25,
+                0.48333333333333334
+              ],
+              "mean": 0.36666666666666664
+            },
+            "latency_ms": {
+              "ci95": [
+                21.627696433279198,
+                55.85318461708084
+              ],
+              "mean": 35.80574713359965
+            },
+            "n_activities": {
+              "ci95": [
+                6.1,
+                7.75
+              ],
+              "mean": 6.9
+            },
+            "n_trips": 60,
+            "over_budget": {
+              "ci95": [
+                0.11666666666666667,
+                0.3333333333333333
+              ],
+              "mean": 0.21666666666666667
+            },
+            "travel_min": {
+              "ci95": [
+                68.35,
+                84.68333333333334
+              ],
+              "mean": 76.5
+            },
+            "utility": {
+              "ci95": [
+                4.161866666666667,
+                5.049266666666667
+              ],
+              "mean": 4.609016666666666
+            },
+            "violations": {
+              "ci95": [
+                0.26666666666666666,
+                0.5666666666666667
+              ],
+              "mean": 0.4166666666666667
+            }
+          }
+        }
+      },
+      "route_optimization_paired": {
+        "nearest_neighbour": {
+          "distance_reduction_pct": {
+            "ci95": [
+              13.419467607869928,
+              19.43681599780545
+            ],
+            "mean": 16.44291529078134
+          },
+          "n": 60,
+          "travel_time_reduction_pct": {
+            "ci95": [
+              13.453806374758441,
+              19.50484974521365
+            ],
+            "mean": 16.502489426480867
+          }
+        },
+        "ortools_free": {
+          "distance_reduction_pct": {
+            "ci95": [
+              26.358166790722965,
+              37.561450105012355
+            ],
+            "mean": 32.17638536408156
+          },
+          "n": 50,
+          "travel_time_reduction_pct": {
+            "ci95": [
+              26.28426237228444,
+              37.76266256619328
+            ],
+            "mean": 32.17685835208194
+          }
+        },
+        "ortools_locked": {
+          "distance_reduction_pct": {
+            "ci95": [
+              24.508924895593985,
+              35.6378437393477
+            ],
+            "mean": 30.4669067456173
+          },
+          "n": 60,
+          "travel_time_reduction_pct": {
+            "ci95": [
+              24.47187677574766,
+              35.66576241167022
+            ],
+            "mean": 30.435017898741233
+          }
+        }
+      },
+      "shortest_paths": {
+        "expansion_ratio_astar_over_dijkstra": 0.49397440675860355,
+        "mean_ms_astar": 0.029113835085977886,
+        "mean_ms_dijkstra": 0.02585286086652615,
+        "mean_nodes_expanded_astar": 20.49484536082474,
+        "mean_nodes_expanded_dijkstra": 41.48969072164948,
+        "note": "k-nearest-neighbour graphs over random points (not road networks); heuristic = great-circle distance (admissible: edges are x1.3).",
+        "paths_with_equal_cost": 194,
+        "query_pairs": 194
+      }
+    },
+    {
+      "context_adaptation": {
+        "cases": 200,
+        "issues_detected": 484,
+        "issues_without_alternative": 150,
+        "latency_ms": {
+          "max": 0.5169169999135192,
+          "mean": 0.10727565491833957,
+          "p50": 0.0870829971972853,
+          "p95": 0.35274999754619785
+        },
+        "note": "Pure engine only: no database, no provider call. Forecasts older than 180 min are ignored by design.",
+        "original_plans_with_violations": 0,
+        "proposals_built": 334,
+        "proposals_with_violations_feasibility_aware_choice": 124,
+        "proposals_with_violations_if_top_ranked_alternative_used": 188
+      },
+      "dataset": {
+        "graph_nodes": 80,
+        "n_attractions": 14,
+        "n_context_cases": 200,
+        "n_graphs": 20,
+        "n_trips": 60,
+        "seed": 43
+      },
+      "label": "SYNTHETIC experiment: generated trips and forecasts, not real users or live data. See docs/research/ROUTING_CONTEXT_EVALUATION.md.",
+      "limitations": [
+        "Travel times are the great-circle estimate (x1.3 at 30 km/h), used both to optimise and to judge: this measures ordering quality, not real road times.",
+        "OR-Tools default mode (greedy descent) is deterministic but not guaranteed optimal; no comparison to an exact solver beyond the small brute-force unit tests.",
+        "Original plans are the naive 'simple_order' builder, a weak baseline; improvements over a stronger heuristic would be smaller.",
+        "Context adaptation uses synthetic forecasts and measures the pure engine; database, provider and network latency are excluded.",
+        "Outputs are deterministic given the seed except latency fields."
+      ],
+      "route_optimization": {
+        "solver_status_counts": {
+          "ortools_free": {
+            "optimized": 60
+          },
+          "ortools_locked": {
+            "optimized": 54,
+            "relaxed": 6
+          }
+        },
+        "summary": {
+          "nearest_neighbour": {
+            "budget_deviation_pct": {
+              "ci95": [
+                -22.5625,
+                -9.736666666666668
+              ],
+              "mean": -16.157666666666668
+            },
+            "distance_m": {
+              "ci95": [
+                50461.01666666667,
+                61341.8
+              ],
+              "mean": 55904.95
+            },
+            "has_violation": {
+              "ci95": [
+                0.6,
+                0.8333333333333334
+              ],
+              "mean": 0.7166666666666667
+            },
+            "latency_ms": {
+              "ci95": [
+                0.03012423348991433,
+                0.03497853316124141
+              ],
+              "mean": 0.03255695003948252
+            },
+            "n_activities": {
+              "ci95": [
+                6.95,
+                8.45
+              ],
+              "mean": 7.7
+            },
+            "n_trips": 60,
+            "over_budget": {
+              "ci95": [
+                0.21666666666666667,
+                0.43333333333333335
+              ],
+              "mean": 0.3333333333333333
+            },
+            "travel_min": {
+              "ci95": [
+                101.08333333333333,
+                122.8
+              ],
+              "mean": 111.86666666666666
+            },
+            "utility": {
+              "ci95": [
+                4.949366666666666,
+                5.787400000000001
+              ],
+              "mean": 5.371783333333334
+            },
+            "violations": {
+              "ci95": [
+                1.0833333333333333,
+                1.75
+              ],
+              "mean": 1.4166666666666667
+            }
+          },
+          "original": {
+            "budget_deviation_pct": {
+              "ci95": [
+                -22.5625,
+                -9.736666666666668
+              ],
+              "mean": -16.157666666666668
+            },
+            "distance_m": {
+              "ci95": [
+                61872.98333333333,
+                74967.03333333334
+              ],
+              "mean": 68506.23333333334
+            },
+            "has_violation": {
+              "ci95": [
+                0.7166666666666667,
+                0.9166666666666666
+              ],
+              "mean": 0.8166666666666667
+            },
+            "latency_ms": {
+              "ci95": [
+                0.0,
+                0.0
+              ],
+              "mean": 0.0
+            },
+            "n_activities": {
+              "ci95": [
+                6.95,
+                8.45
+              ],
+              "mean": 7.7
+            },
+            "n_trips": 60,
+            "over_budget": {
+              "ci95": [
+                0.21666666666666667,
+                0.43333333333333335
+              ],
+              "mean": 0.3333333333333333
+            },
+            "travel_min": {
+              "ci95": [
+                123.6,
+                149.85
+              ],
+              "mean": 136.98333333333332
+            },
+            "utility": {
+              "ci95": [
+                4.949366666666666,
+                5.787400000000001
+              ],
+              "mean": 5.371783333333334
+            },
+            "violations": {
+              "ci95": [
+                1.2,
+                1.8333333333333333
+              ],
+              "mean": 1.5
+            }
+          },
+          "ortools_free": {
+            "budget_deviation_pct": {
+              "ci95": [
+                -28.209999999999997,
+                -19.171499999999998
+              ],
+              "mean": -23.344333333333335
+            },
+            "distance_m": {
+              "ci95": [
+                27611.0,
+                35756.583333333336
+              ],
+              "mean": 31571.583333333332
+            },
+            "has_violation": {
+              "ci95": [
+                0.0,
+                0.08333333333333333
+              ],
+              "mean": 0.03333333333333333
+            },
+            "latency_ms": {
+              "ci95": [
+                44.01873478327616,
+                89.39829783327393
+              ],
+              "mean": 66.29653888345881
+            },
+            "n_activities": {
+              "ci95": [
+                5.1,
+                6.833333333333333
+              ],
+              "mean": 5.966666666666667
+            },
+            "n_trips": 60,
+            "over_budget": {
+              "ci95": [
+                0.0,
+                0.0
+              ],
+              "mean": 0.0
+            },
+            "travel_min": {
+              "ci95": [
+                55.18333333333333,
+                71.48333333333333
+              ],
+              "mean": 63.13333333333333
+            },
+            "utility": {
+              "ci95": [
+                3.7944000000000004,
+                4.927533333333333
+              ],
+              "mean": 4.3429
+            },
+            "violations": {
+              "ci95": [
+                0.0,
+                0.08333333333333333
+              ],
+              "mean": 0.03333333333333333
+            }
+          },
+          "ortools_locked": {
+            "budget_deviation_pct": {
+              "ci95": [
+                -22.5625,
+                -9.736666666666668
+              ],
+              "mean": -16.157666666666668
+            },
+            "distance_m": {
+              "ci95": [
+                37016.75,
+                43058.9
+              ],
+              "mean": 39972.816666666666
+            },
+            "has_violation": {
+              "ci95": [
+                0.3333333333333333,
+                0.5666666666666667
+              ],
+              "mean": 0.45
+            },
+            "latency_ms": {
+              "ci95": [
+                27.00590696731524,
+                150.39580420016136
+              ],
+              "mean": 77.9628909670161
+            },
+            "n_activities": {
+              "ci95": [
+                6.95,
+                8.45
+              ],
+              "mean": 7.7
+            },
+            "n_trips": 60,
+            "over_budget": {
+              "ci95": [
+                0.21666666666666667,
+                0.43333333333333335
+              ],
+              "mean": 0.3333333333333333
+            },
+            "travel_min": {
+              "ci95": [
+                74.08333333333333,
+                86.31666666666666
+              ],
+              "mean": 80.05
+            },
+            "utility": {
+              "ci95": [
+                4.949366666666666,
+                5.787400000000001
+              ],
+              "mean": 5.371783333333334
+            },
+            "violations": {
+              "ci95": [
+                0.4,
+                0.8
+              ],
+              "mean": 0.5833333333333334
+            }
+          }
+        }
+      },
+      "route_optimization_paired": {
+        "nearest_neighbour": {
+          "distance_reduction_pct": {
+            "ci95": [
+              14.715714983816076,
+              19.6671570445903
+            ],
+            "mean": 17.246367331512158
+          },
+          "n": 60,
+          "travel_time_reduction_pct": {
+            "ci95": [
+              14.632605136723873,
+              19.601775147447803
+            ],
+            "mean": 17.184820628386284
+          }
+        },
+        "ortools_free": {
+          "distance_reduction_pct": {
+            "ci95": [
+              31.897116872698426,
+              40.83536734057195
+            ],
+            "mean": 36.397111675771725
+          },
+          "n": 49,
+          "travel_time_reduction_pct": {
+            "ci95": [
+              31.937760244051475,
+              40.94818554766425
+            ],
+            "mean": 36.38887386663574
+          }
+        },
+        "ortools_locked": {
+          "distance_reduction_pct": {
+            "ci95": [
+              32.623476493298206,
+              40.492530806173676
+            ],
+            "mean": 36.75644641169752
+          },
+          "n": 60,
+          "travel_time_reduction_pct": {
+            "ci95": [
+              32.580127438931854,
+              40.402212490453934
+            ],
+            "mean": 36.6599172589963
+          }
+        }
+      },
+      "shortest_paths": {
+        "expansion_ratio_astar_over_dijkstra": 0.5191965420798372,
+        "mean_ms_astar": 0.02976219374817523,
+        "mean_ms_dijkstra": 0.025847083791427274,
+        "mean_nodes_expanded_astar": 21.38219895287958,
+        "mean_nodes_expanded_dijkstra": 41.18324607329843,
+        "note": "k-nearest-neighbour graphs over random points (not road networks); heuristic = great-circle distance (admissible: edges are x1.3).",
+        "paths_with_equal_cost": 191,
+        "query_pairs": 191
+      }
+    },
+    {
+      "context_adaptation": {
+        "cases": 200,
+        "issues_detected": 452,
+        "issues_without_alternative": 83,
+        "latency_ms": {
+          "max": 0.5725000009988435,
+          "mean": 0.11762787014959031,
+          "p50": 0.10475000090082176,
+          "p95": 0.32483399991178885
+        },
+        "note": "Pure engine only: no database, no provider call. Forecasts older than 180 min are ignored by design.",
+        "original_plans_with_violations": 0,
+        "proposals_built": 369,
+        "proposals_with_violations_feasibility_aware_choice": 144,
+        "proposals_with_violations_if_top_ranked_alternative_used": 210
+      },
+      "dataset": {
+        "graph_nodes": 80,
+        "n_attractions": 14,
+        "n_context_cases": 200,
+        "n_graphs": 20,
+        "n_trips": 60,
+        "seed": 44
+      },
+      "label": "SYNTHETIC experiment: generated trips and forecasts, not real users or live data. See docs/research/ROUTING_CONTEXT_EVALUATION.md.",
+      "limitations": [
+        "Travel times are the great-circle estimate (x1.3 at 30 km/h), used both to optimise and to judge: this measures ordering quality, not real road times.",
+        "OR-Tools default mode (greedy descent) is deterministic but not guaranteed optimal; no comparison to an exact solver beyond the small brute-force unit tests.",
+        "Original plans are the naive 'simple_order' builder, a weak baseline; improvements over a stronger heuristic would be smaller.",
+        "Context adaptation uses synthetic forecasts and measures the pure engine; database, provider and network latency are excluded.",
+        "Outputs are deterministic given the seed except latency fields."
+      ],
+      "route_optimization": {
+        "solver_status_counts": {
+          "ortools_free": {
+            "optimized": 60
+          },
+          "ortools_locked": {
+            "optimized": 56,
+            "relaxed": 4
+          }
+        },
+        "summary": {
+          "nearest_neighbour": {
+            "budget_deviation_pct": {
+              "ci95": [
+                -20.901,
+                -4.272333333333333
+              ],
+              "mean": -12.929499999999999
+            },
+            "distance_m": {
+              "ci95": [
+                46016.3,
+                59475.73333333333
+              ],
+              "mean": 53135.36666666667
+            },
+            "has_violation": {
+              "ci95": [
+                0.45,
+                0.7
+              ],
+              "mean": 0.5833333333333334
+            },
+            "latency_ms": {
+              "ci95": [
+                0.028595916713432718,
+                0.033443733082094695
+              ],
+              "mean": 0.031136816505750176
+            },
+            "n_activities": {
+              "ci95": [
+                6.4,
+                8.0
+              ],
+              "mean": 7.25
+            },
+            "n_trips": 60,
+            "over_budget": {
+              "ci95": [
+                0.16666666666666666,
+                0.4
+              ],
+              "mean": 0.2833333333333333
+            },
+            "travel_min": {
+              "ci95": [
+                91.95,
+                119.06666666666666
+              ],
+              "mean": 106.26666666666667
+            },
+            "utility": {
+              "ci95": [
+                4.5975166666666665,
+                5.433983333333333
+              ],
+              "mean": 5.042
+            },
+            "violations": {
+              "ci95": [
+                0.8,
+                1.4166666666666667
+              ],
+              "mean": 1.1
+            }
+          },
+          "original": {
+            "budget_deviation_pct": {
+              "ci95": [
+                -20.901,
+                -4.272333333333333
+              ],
+              "mean": -12.929499999999999
+            },
+            "distance_m": {
+              "ci95": [
+                55699.13333333333,
+                71429.1
+              ],
+              "mean": 64077.35
+            },
+            "has_violation": {
+              "ci95": [
+                0.48333333333333334,
+                0.75
+              ],
+              "mean": 0.6166666666666667
+            },
+            "latency_ms": {
+              "ci95": [
+                0.0,
+                0.0
+              ],
+              "mean": 0.0
+            },
+            "n_activities": {
+              "ci95": [
+                6.4,
+                8.0
+              ],
+              "mean": 7.25
+            },
+            "n_trips": 60,
+            "over_budget": {
+              "ci95": [
+                0.16666666666666666,
+                0.4
+              ],
+              "mean": 0.2833333333333333
+            },
+            "travel_min": {
+              "ci95": [
+                111.3,
+                142.8
+              ],
+              "mean": 128.08333333333334
+            },
+            "utility": {
+              "ci95": [
+                4.5975166666666665,
+                5.433983333333333
+              ],
+              "mean": 5.042
+            },
+            "violations": {
+              "ci95": [
+                0.9333333333333333,
+                1.6166666666666667
+              ],
+              "mean": 1.2833333333333334
+            }
+          },
+          "ortools_free": {
+            "budget_deviation_pct": {
+              "ci95": [
+                -26.957666666666668,
+                -18.577166666666667
+              ],
+              "mean": -22.835166666666666
+            },
+            "distance_m": {
+              "ci95": [
+                24900.283333333333,
+                33339.46666666667
+              ],
+              "mean": 29008.366666666665
+            },
+            "has_violation": {
+              "ci95": [
+                0.0,
+                0.11666666666666667
+              ],
+              "mean": 0.05
+            },
+            "latency_ms": {
+              "ci95": [
+                36.75848001621489,
+                81.89021743304086
+              ],
+              "mean": 58.91600074961995
+            },
+            "n_activities": {
+              "ci95": [
+                4.833333333333333,
+                6.616666666666666
+              ],
+              "mean": 5.75
+            },
+            "n_trips": 60,
+            "over_budget": {
+              "ci95": [
+                0.0,
+                0.0
+              ],
+              "mean": 0.0
+            },
+            "travel_min": {
+              "ci95": [
+                49.733333333333334,
+                66.68333333333334
+              ],
+              "mean": 57.983333333333334
+            },
+            "utility": {
+              "ci95": [
+                3.4877666666666665,
+                4.577716666666666
+              ],
+              "mean": 4.076266666666666
+            },
+            "violations": {
+              "ci95": [
+                0.0,
+                0.15
+              ],
+              "mean": 0.06666666666666667
+            }
+          },
+          "ortools_locked": {
+            "budget_deviation_pct": {
+              "ci95": [
+                -20.901,
+                -4.272333333333333
+              ],
+              "mean": -12.929499999999999
+            },
+            "distance_m": {
+              "ci95": [
+                33460.55,
+                40409.76666666667
+              ],
+              "mean": 37068.933333333334
+            },
+            "has_violation": {
+              "ci95": [
+                0.23333333333333334,
+                0.48333333333333334
+              ],
+              "mean": 0.36666666666666664
+            },
+            "latency_ms": {
+              "ci95": [
+                23.001444433248253,
+                148.88367775013953
+              ],
+              "mean": 74.41177985007623
+            },
+            "n_activities": {
+              "ci95": [
+                6.4,
+                8.0
+              ],
+              "mean": 7.25
+            },
+            "n_trips": 60,
+            "over_budget": {
+              "ci95": [
+                0.16666666666666666,
+                0.4
+              ],
+              "mean": 0.2833333333333333
+            },
+            "travel_min": {
+              "ci95": [
+                66.88333333333334,
+                80.9
+              ],
+              "mean": 74.13333333333334
+            },
+            "utility": {
+              "ci95": [
+                4.5975166666666665,
+                5.433983333333333
+              ],
+              "mean": 5.042
+            },
+            "violations": {
+              "ci95": [
+                0.3,
+                0.7
+              ],
+              "mean": 0.5
+            }
+          }
+        }
+      },
+      "route_optimization_paired": {
+        "nearest_neighbour": {
+          "distance_reduction_pct": {
+            "ci95": [
+              13.26523012396553,
+              19.424307508669582
+            ],
+            "mean": 16.523091994884034
+          },
+          "n": 60,
+          "travel_time_reduction_pct": {
+            "ci95": [
+              13.227672438101532,
+              19.489826129733512
+            ],
+            "mean": 16.50715575496342
+          }
+        },
+        "ortools_free": {
+          "distance_reduction_pct": {
+            "ci95": [
+              31.84700687904827,
+              40.95513719160662
+            ],
+            "mean": 36.58203240269127
+          },
+          "n": 52,
+          "travel_time_reduction_pct": {
+            "ci95": [
+              31.840713735903556,
+              40.99131835093949
+            ],
+            "mean": 36.58034776559401
+          }
+        },
+        "ortools_locked": {
+          "distance_reduction_pct": {
+            "ci95": [
+              32.418572165725564,
+              40.36813534561318
+            ],
+            "mean": 36.49013538821786
+          },
+          "n": 60,
+          "travel_time_reduction_pct": {
+            "ci95": [
+              32.3784593237295,
+              40.408052211155656
+            ],
+            "mean": 36.466998441944156
+          }
+        }
+      },
+      "shortest_paths": {
+        "expansion_ratio_astar_over_dijkstra": 0.5188222139396198,
+        "mean_ms_astar": 0.02945969237584788,
+        "mean_ms_dijkstra": 0.025802158910291605,
+        "mean_nodes_expanded_astar": 21.415384615384614,
+        "mean_nodes_expanded_dijkstra": 41.276923076923076,
+        "note": "k-nearest-neighbour graphs over random points (not road networks); heuristic = great-circle distance (admissible: edges are x1.3).",
+        "paths_with_equal_cost": 195,
+        "query_pairs": 195
+      }
+    },
+    {
+      "context_adaptation": {
+        "cases": 200,
+        "issues_detected": 514,
+        "issues_without_alternative": 135,
+        "latency_ms": {
+          "max": 0.5155830003786832,
+          "mean": 0.12185789499199018,
+          "p50": 0.08612499732407741,
+          "p95": 0.34750000122585334
+        },
+        "note": "Pure engine only: no database, no provider call. Forecasts older than 180 min are ignored by design.",
+        "original_plans_with_violations": 0,
+        "proposals_built": 379,
+        "proposals_with_violations_feasibility_aware_choice": 163,
+        "proposals_with_violations_if_top_ranked_alternative_used": 238
+      },
+      "dataset": {
+        "graph_nodes": 80,
+        "n_attractions": 14,
+        "n_context_cases": 200,
+        "n_graphs": 20,
+        "n_trips": 60,
+        "seed": 45
+      },
+      "label": "SYNTHETIC experiment: generated trips and forecasts, not real users or live data. See docs/research/ROUTING_CONTEXT_EVALUATION.md.",
+      "limitations": [
+        "Travel times are the great-circle estimate (x1.3 at 30 km/h), used both to optimise and to judge: this measures ordering quality, not real road times.",
+        "OR-Tools default mode (greedy descent) is deterministic but not guaranteed optimal; no comparison to an exact solver beyond the small brute-force unit tests.",
+        "Original plans are the naive 'simple_order' builder, a weak baseline; improvements over a stronger heuristic would be smaller.",
+        "Context adaptation uses synthetic forecasts and measures the pure engine; database, provider and network latency are excluded.",
+        "Outputs are deterministic given the seed except latency fields."
+      ],
+      "route_optimization": {
+        "solver_status_counts": {
+          "ortools_free": {
+            "optimized": 60
+          },
+          "ortools_locked": {
+            "optimized": 54,
+            "relaxed": 6
+          }
+        },
+        "summary": {
+          "nearest_neighbour": {
+            "budget_deviation_pct": {
+              "ci95": [
+                -18.793,
+                -5.5405
+              ],
+              "mean": -12.101666666666667
+            },
+            "distance_m": {
+              "ci95": [
+                52605.5,
+                68049.3
+              ],
+              "mean": 60679.333333333336
+            },
+            "has_violation": {
+              "ci95": [
+                0.6833333333333333,
+                0.8833333333333333
+              ],
+              "mean": 0.7833333333333333
+            },
+            "latency_ms": {
+              "ci95": [
+                0.030757666839538917,
+                0.0353888500588558
+              ],
+              "mean": 0.03315483330273613
+            },
+            "n_activities": {
+              "ci95": [
+                7.25,
+                8.8
+              ],
+              "mean": 8.05
+            },
+            "n_trips": 60,
+            "over_budget": {
+              "ci95": [
+                0.26666666666666666,
+                0.5
+              ],
+              "mean": 0.38333333333333336
+            },
+            "travel_min": {
+              "ci95": [
+                105.41666666666667,
+                136.13333333333333
+              ],
+              "mean": 121.43333333333334
+            },
+            "utility": {
+              "ci95": [
+                4.683916666666667,
+                5.487633333333333
+              ],
+              "mean": 5.108633333333333
+            },
+            "violations": {
+              "ci95": [
+                1.2333333333333334,
+                1.85
+              ],
+              "mean": 1.5333333333333334
+            }
+          },
+          "original": {
+            "budget_deviation_pct": {
+              "ci95": [
+                -18.793,
+                -5.5405
+              ],
+              "mean": -12.101666666666667
+            },
+            "distance_m": {
+              "ci95": [
+                62815.183333333334,
+                79574.13333333333
+              ],
+              "mean": 71510.46666666666
+            },
+            "has_violation": {
+              "ci95": [
+                0.7166666666666667,
+                0.9
+              ],
+              "mean": 0.8166666666666667
+            },
+            "latency_ms": {
+              "ci95": [
+                0.0,
+                0.0
+              ],
+              "mean": 0.0
+            },
+            "n_activities": {
+              "ci95": [
+                7.25,
+                8.8
+              ],
+              "mean": 8.05
+            },
+            "n_trips": 60,
+            "over_budget": {
+              "ci95": [
+                0.26666666666666666,
+                0.5
+              ],
+              "mean": 0.38333333333333336
+            },
+            "travel_min": {
+              "ci95": [
+                125.8,
+                159.26666666666668
+              ],
+              "mean": 143.13333333333333
+            },
+            "utility": {
+              "ci95": [
+                4.683916666666667,
+                5.487633333333333
+              ],
+              "mean": 5.108633333333333
+            },
+            "violations": {
+              "ci95": [
+                1.35,
+                2.1
+              ],
+              "mean": 1.7
+            }
+          },
+          "ortools_free": {
+            "budget_deviation_pct": {
+              "ci95": [
+                -25.270166666666668,
+                -17.107666666666667
+              ],
+              "mean": -21.043666666666663
+            },
+            "distance_m": {
+              "ci95": [
+                26562.416666666668,
+                35165.3
+              ],
+              "mean": 30866.433333333334
+            },
+            "has_violation": {
+              "ci95": [
+                0.0,
+                0.08333333333333333
+              ],
+              "mean": 0.03333333333333333
+            },
+            "latency_ms": {
+              "ci95": [
+                52.77989031698477,
+                106.69036606680795
+              ],
+              "mean": 78.06347368338417
+            },
+            "n_activities": {
+              "ci95": [
+                5.133333333333334,
+                6.983333333333333
+              ],
+              "mean": 6.05
+            },
+            "n_trips": 60,
+            "over_budget": {
+              "ci95": [
+                0.0,
+                0.0
+              ],
+              "mean": 0.0
+            },
+            "travel_min": {
+              "ci95": [
+                53.1,
+                70.31666666666666
+              ],
+              "mean": 61.733333333333334
+            },
+            "utility": {
+              "ci95": [
+                3.478283333333333,
+                4.550766666666666
+              ],
+              "mean": 4.010183333333333
+            },
+            "violations": {
+              "ci95": [
+                0.0,
+                0.08333333333333333
+              ],
+              "mean": 0.03333333333333333
+            }
+          },
+          "ortools_locked": {
+            "budget_deviation_pct": {
+              "ci95": [
+                -18.793,
+                -5.5405
+              ],
+              "mean": -12.101666666666667
+            },
+            "distance_m": {
+              "ci95": [
+                37416.316666666666,
+                44785.933333333334
+              ],
+              "mean": 41299.35
+            },
+            "has_violation": {
+              "ci95": [
+                0.36666666666666664,
+                0.6
+              ],
+              "mean": 0.48333333333333334
+            },
+            "latency_ms": {
+              "ci95": [
+                53.955324916387326,
+                233.12757843341387
+              ],
+              "mean": 132.31111384987648
+            },
+            "n_activities": {
+              "ci95": [
+                7.25,
+                8.8
+              ],
+              "mean": 8.05
+            },
+            "n_trips": 60,
+            "over_budget": {
+              "ci95": [
+                0.26666666666666666,
+                0.5
+              ],
+              "mean": 0.38333333333333336
+            },
+            "travel_min": {
+              "ci95": [
+                74.91666666666667,
+                89.61666666666666
+              ],
+              "mean": 82.68333333333334
+            },
+            "utility": {
+              "ci95": [
+                4.683916666666667,
+                5.487633333333333
+              ],
+              "mean": 5.108633333333333
+            },
+            "violations": {
+              "ci95": [
+                0.5,
+                1.05
+              ],
+              "mean": 0.75
+            }
+          }
+        }
+      },
+      "route_optimization_paired": {
+        "nearest_neighbour": {
+          "distance_reduction_pct": {
+            "ci95": [
+              12.183616059318412,
+              18.2766756788631
+            ],
+            "mean": 15.21679968459152
+          },
+          "n": 60,
+          "travel_time_reduction_pct": {
+            "ci95": [
+              12.089071675077406,
+              18.170784914087957
+            ],
+            "mean": 15.167521727551948
+          }
+        },
+        "ortools_free": {
+          "distance_reduction_pct": {
+            "ci95": [
+              28.83061408043382,
+              40.97100337979343
+            ],
+            "mean": 35.45760026624222
+          },
+          "n": 50,
+          "travel_time_reduction_pct": {
+            "ci95": [
+              28.891877331072298,
+              40.87285980394776
+            ],
+            "mean": 35.35575429439391
+          }
+        },
+        "ortools_locked": {
+          "distance_reduction_pct": {
+            "ci95": [
+              28.44324573498822,
+              40.057617114708336
+            ],
+            "mean": 34.947295634950834
+          },
+          "n": 60,
+          "travel_time_reduction_pct": {
+            "ci95": [
+              28.40977703969291,
+              40.00107277241317
+            ],
+            "mean": 34.87248391223154
+          }
+        }
+      },
+      "shortest_paths": {
+        "expansion_ratio_astar_over_dijkstra": 0.5050927135022198,
+        "mean_ms_astar": 0.029068395936822828,
+        "mean_ms_dijkstra": 0.02520355199446082,
+        "mean_nodes_expanded_astar": 20.145833333333332,
+        "mean_nodes_expanded_dijkstra": 39.885416666666664,
+        "note": "k-nearest-neighbour graphs over random points (not road networks); heuristic = great-circle distance (admissible: edges are x1.3).",
+        "paths_with_equal_cost": 192,
+        "query_pairs": 192
+      }
+    },
+    {
+      "context_adaptation": {
+        "cases": 200,
+        "issues_detected": 485,
+        "issues_without_alternative": 140,
+        "latency_ms": {
+          "max": 0.6890830009069759,
+          "mean": 0.10962499496599776,
+          "p50": 0.09308299922849983,
+          "p95": 0.29158300094422884
+        },
+        "note": "Pure engine only: no database, no provider call. Forecasts older than 180 min are ignored by design.",
+        "original_plans_with_violations": 0,
+        "proposals_built": 345,
+        "proposals_with_violations_feasibility_aware_choice": 136,
+        "proposals_with_violations_if_top_ranked_alternative_used": 201
+      },
+      "dataset": {
+        "graph_nodes": 80,
+        "n_attractions": 14,
+        "n_context_cases": 200,
+        "n_graphs": 20,
+        "n_trips": 60,
+        "seed": 46
+      },
+      "label": "SYNTHETIC experiment: generated trips and forecasts, not real users or live data. See docs/research/ROUTING_CONTEXT_EVALUATION.md.",
+      "limitations": [
+        "Travel times are the great-circle estimate (x1.3 at 30 km/h), used both to optimise and to judge: this measures ordering quality, not real road times.",
+        "OR-Tools default mode (greedy descent) is deterministic but not guaranteed optimal; no comparison to an exact solver beyond the small brute-force unit tests.",
+        "Original plans are the naive 'simple_order' builder, a weak baseline; improvements over a stronger heuristic would be smaller.",
+        "Context adaptation uses synthetic forecasts and measures the pure engine; database, provider and network latency are excluded.",
+        "Outputs are deterministic given the seed except latency fields."
+      ],
+      "route_optimization": {
+        "solver_status_counts": {
+          "ortools_free": {
+            "optimized": 60
+          },
+          "ortools_locked": {
+            "infeasible": 1,
+            "optimized": 50,
+            "relaxed": 9
+          }
+        },
+        "summary": {
+          "nearest_neighbour": {
+            "budget_deviation_pct": {
+              "ci95": [
+                -27.4545,
+                -14.745333333333333
+              ],
+              "mean": -20.94366666666667
+            },
+            "distance_m": {
+              "ci95": [
+                43969.11666666667,
+                58190.1
+              ],
+              "mean": 50706.833333333336
+            },
+            "has_violation": {
+              "ci95": [
+                0.5666666666666667,
+                0.8
+              ],
+              "mean": 0.6833333333333333
+            },
+            "latency_ms": {
+              "ci95": [
+                0.02757976665937652,
+                0.033352732862113044
+              ],
+              "mean": 0.030459616270187933
+            },
+            "n_activities": {
+              "ci95": [
+                6.2,
+                8.05
+              ],
+              "mean": 7.1
+            },
+            "n_trips": 60,
+            "over_budget": {
+              "ci95": [
+                0.18333333333333332,
+                0.4166666666666667
+              ],
+              "mean": 0.3
+            },
+            "travel_min": {
+              "ci95": [
+                87.9,
+                116.4
+              ],
+              "mean": 101.35
+            },
+            "utility": {
+              "ci95": [
+                4.345166666666667,
+                5.3405000000000005
+              ],
+              "mean": 4.8373333333333335
+            },
+            "violations": {
+              "ci95": [
+                0.9,
+                1.5
+              ],
+              "mean": 1.2
+            }
+          },
+          "original": {
+            "budget_deviation_pct": {
+              "ci95": [
+                -27.4545,
+                -14.745333333333333
+              ],
+              "mean": -20.94366666666667
+            },
+            "distance_m": {
+              "ci95": [
+                53319.083333333336,
+                70689.91666666667
+              ],
+              "mean": 61640.416666666664
+            },
+            "has_violation": {
+              "ci95": [
+                0.6333333333333333,
+                0.85
+              ],
+              "mean": 0.7333333333333333
+            },
+            "latency_ms": {
+              "ci95": [
+                0.0,
+                0.0
+              ],
+              "mean": 0.0
+            },
+            "n_activities": {
+              "ci95": [
+                6.2,
+                8.05
+              ],
+              "mean": 7.1
+            },
+            "n_trips": 60,
+            "over_budget": {
+              "ci95": [
+                0.18333333333333332,
+                0.4166666666666667
+              ],
+              "mean": 0.3
+            },
+            "travel_min": {
+              "ci95": [
+                106.68333333333334,
+                141.48333333333332
+              ],
+              "mean": 123.3
+            },
+            "utility": {
+              "ci95": [
+                4.345166666666667,
+                5.3405000000000005
+              ],
+              "mean": 4.8373333333333335
+            },
+            "violations": {
+              "ci95": [
+                1.1666666666666667,
+                1.85
+              ],
+              "mean": 1.5
+            }
+          },
+          "ortools_free": {
+            "budget_deviation_pct": {
+              "ci95": [
+                -31.741666666666667,
+                -21.94066666666667
+              ],
+              "mean": -26.601
+            },
+            "distance_m": {
+              "ci95": [
+                24223.033333333333,
+                33025.63333333333
+              ],
+              "mean": 28441.716666666667
+            },
+            "has_violation": {
+              "ci95": [
+                0.0,
+                0.0
+              ],
+              "mean": 0.0
+            },
+            "latency_ms": {
+              "ci95": [
+                44.6056604497547,
+                100.89788409998921
+              ],
+              "mean": 71.44692091642355
+            },
+            "n_activities": {
+              "ci95": [
+                4.616666666666666,
+                6.416666666666667
+              ],
+              "mean": 5.516666666666667
+            },
+            "n_trips": 60,
+            "over_budget": {
+              "ci95": [
+                0.0,
+                0.0
+              ],
+              "mean": 0.0
+            },
+            "travel_min": {
+              "ci95": [
+                48.38333333333333,
+                66.0
+              ],
+              "mean": 56.85
+            },
+            "utility": {
+              "ci95": [
+                3.440733333333333,
+                4.49795
+              ],
+              "mean": 3.9633666666666665
+            },
+            "violations": {
+              "ci95": [
+                0.0,
+                0.0
+              ],
+              "mean": 0.0
+            }
+          },
+          "ortools_locked": {
+            "budget_deviation_pct": {
+              "ci95": [
+                -28.29440677966102,
+                -15.26457627118644
+              ],
+              "mean": -21.516440677966102
+            },
+            "distance_m": {
+              "ci95": [
+                33144.016949152545,
+                41366.49152542373
+              ],
+              "mean": 36961.72881355932
+            },
+            "has_violation": {
+              "ci95": [
+                0.3050847457627119,
+                0.576271186440678
+              ],
+              "mean": 0.4406779661016949
+            },
+            "latency_ms": {
+              "ci95": [
+                24.78073874571838,
+                154.0898968470189
+              ],
+              "mean": 77.56449154211145
+            },
+            "n_activities": {
+              "ci95": [
+                6.254237288135593,
+                8.084745762711865
+              ],
+              "mean": 7.169491525423729
+            },
+            "n_trips": 59,
+            "over_budget": {
+              "ci95": [
+                0.1694915254237288,
+                0.4067796610169492
+              ],
+              "mean": 0.288135593220339
+            },
+            "travel_min": {
+              "ci95": [
+                66.42372881355932,
+                82.7457627118644
+              ],
+              "mean": 73.9322033898305
+            },
+            "utility": {
+              "ci95": [
+                4.417084745762712,
+                5.377474576271187
+              ],
+              "mean": 4.876881355932203
+            },
+            "violations": {
+              "ci95": [
+                0.3728813559322034,
+                0.8135593220338984
+              ],
+              "mean": 0.576271186440678
+            }
+          }
+        }
+      },
+      "route_optimization_paired": {
+        "nearest_neighbour": {
+          "distance_reduction_pct": {
+            "ci95": [
+              13.972970054632905,
+              19.56483501936412
+            ],
+            "mean": 16.633673003065084
+          },
+          "n": 60,
+          "travel_time_reduction_pct": {
+            "ci95": [
+              14.053362764832212,
+              19.6408548095632
+            ],
+            "mean": 16.74488212560299
+          }
+        },
+        "ortools_free": {
+          "distance_reduction_pct": {
+            "ci95": [
+              32.23575471993415,
+              41.460028413553566
+            ],
+            "mean": 37.16263767958133
+          },
+          "n": 44,
+          "travel_time_reduction_pct": {
+            "ci95": [
+              32.1500979040391,
+              41.41256727000689
+            ],
+            "mean": 37.08272158776587
+          }
+        },
+        "ortools_locked": {
+          "distance_reduction_pct": {
+            "ci95": [
+              27.323911261263802,
+              38.490971468589436
+            ],
+            "mean": 32.86456148171108
+          },
+          "n": 59,
+          "travel_time_reduction_pct": {
+            "ci95": [
+              27.384009670908277,
+              38.41305781800374
+            ],
+            "mean": 32.87904370263189
+          }
+        }
+      },
+      "shortest_paths": {
+        "expansion_ratio_astar_over_dijkstra": 0.47832797427652735,
+        "mean_ms_astar": 0.028366429908888734,
+        "mean_ms_dijkstra": 0.025694709959731877,
+        "mean_nodes_expanded_astar": 19.269430051813472,
+        "mean_nodes_expanded_dijkstra": 40.284974093264246,
+        "note": "k-nearest-neighbour graphs over random points (not road networks); heuristic = great-circle distance (admissible: edges are x1.3).",
+        "paths_with_equal_cost": 193,
+        "query_pairs": 193
+      }
+    }
+  ],
+  "seeds": [
+    42,
+    43,
+    44,
+    45,
+    46
+  ]
+}

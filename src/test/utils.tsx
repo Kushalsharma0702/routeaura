@@ -105,3 +105,27 @@ export const makeItinerary = (o: Record<string, unknown> = {}) => ({
   violations: [], created_at: '2026-11-11T10:00:00Z', updated_at: '2026-11-11T10:00:00Z', ...o,
 });
 export const VERSIONS = [{ version: 2, summary: 'Removed Amber Fort', created_at: '2026-11-11T10:05:00Z' }, { version: 1, summary: 'Generated', created_at: '2026-11-11T10:00:00Z' }];
+
+export const makeOptimization = (o: Record<string, unknown> = {}) => ({
+  id: 'op1', itinerary_id: 'it1', status: 'optimized', applied: false, base_version: 1,
+  weights: { distance: 1, time: 1, cost: 0.5, preference: 1, taxi_rupees_per_km: 12 },
+  routing: { source: 'estimate', notes: ['great-circle x 1.3 at 30 km/h; not road routing and no traffic'], live_traffic: false, fetched_at: '2026-11-11T10:00:00Z' },
+  before: { days: [{ day: 1, stops: [{ id: 'act1', name: 'Hawa Mahal', lat: 26.92, lng: 75.82, start_time: null, duration_min: 60, locked: false }, { id: 'act2', name: 'Amber Fort', lat: 26.98, lng: 75.85, start_time: null, duration_min: 120, locked: false }] }],
+    metrics: { distance_m: 20000, travel_min: 40, wait_min: 0, n_activities: 2, utility: 1, violations: [{ type: 'day_overrun', day: 1, message: 'Day 1 ends at 18:30, after the 18:00 day end' }], budget: { deviation_pct: -20, within_budget: true } } },
+  after: { days: [{ day: 1, stops: [{ id: 'act2', name: 'Amber Fort', lat: 26.98, lng: 75.85, start_time: null, duration_min: 120, locked: false }, { id: 'act1', name: 'Hawa Mahal', lat: 26.92, lng: 75.82, start_time: null, duration_min: 60, locked: false }] }],
+    metrics: { distance_m: 12000, travel_min: 24, wait_min: 0, n_activities: 2, utility: 1, violations: [], budget: { deviation_pct: -20, within_budget: true } } },
+  delta: { distance_m: -8000, distance_pct: '-40%', travel_min: -16, travel_pct: '-40%', violations: -1, activities: 0 },
+  changes: ['Travel distance 20.0 km → 12.0 km (-40%).', 'Day 1 order changed: Hawa Mahal → Amber Fort ⇒ Amber Fort → Hawa Mahal.'],
+  dropped: [], notes: [], solver_ms: 12.5, created_at: '2026-11-11T10:00:00Z', applied_at: null, ...o,
+});
+export const makeContextStatus = (o: Record<string, unknown> = {}) => ({
+  weather_provider: 'none', weather_configured: false, needs_dates: false, max_age_minutes: 180, snapshots: [], stale_days: [],
+  notes: ['No weather provider is configured, so no weather is shown or used. You can still report closures, delays and spending yourself.'], ...o,
+});
+export const makeProposal = (o: Record<string, unknown> = {}) => ({
+  id: 'pr1', itinerary_id: 'it1', status: 'pending',
+  trigger: { type: 'rain', day: 1, activity_id: 'act2', evidence: '85% chance of rain, 12.0 mm expected (open-meteo, fetched 10:00 UTC)', source: 'open-meteo', fetched_at: '2026-11-11T10:00:00Z' },
+  changes: [{ action: 'replace', activity_id: 'act2', day: 1, from: 'Amber Fort', to: 'City Palace', to_attraction_id: 'a9', reason: 'rain: 85% chance. Suggested City Palace: same category (history), 9.0 km from Amber Fort, indoor.' }],
+  preview: { after: { violations: [], days: [] }, alternatives: [{ name: 'City Palace', why: 'indoor' }] }, base_version: 1, material: true, applied_version: null,
+  created_at: '2026-11-11T10:00:00Z', decided_at: null, ...o,
+});

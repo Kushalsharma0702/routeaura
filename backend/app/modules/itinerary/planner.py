@@ -13,6 +13,7 @@ Honesty rules
 
 from __future__ import annotations
 
+from collections.abc import Callable
 from dataclasses import dataclass, field
 from datetime import date, timedelta
 
@@ -50,6 +51,9 @@ class PlanParams:
     lunch_min: int = 60
     speed_kmh: float = 30.0
     max_per_day: int = 5
+    # Optional leg provider ((lat,lng),(lat,lng)) -> (metres, minutes), e.g. backed by a routing matrix.
+    # When None the built-in great-circle estimate is used.
+    leg: Callable[[tuple[float, float], tuple[float, float]], tuple[int, int]] | None = None
 
 
 @dataclass
@@ -118,7 +122,12 @@ def schedule_day(day: int, order: list[Candidate], p: PlanParams) -> DaySchedule
     slots: list[Slot] = []
     violations: list[Violation] = []
     for c in order:
-        metres, minutes = travel(pos, (c.lat, c.lng), p.speed_kmh) if pos else (0, 0)
+        if not pos:
+            metres, minutes = 0, 0
+        elif p.leg is not None:
+            metres, minutes = p.leg(pos, (c.lat, c.lng))
+        else:
+            metres, minutes = travel(pos, (c.lat, c.lng), p.speed_kmh)
         t += minutes
         status, windows = hours_window(c, day_date)
         wait = 0

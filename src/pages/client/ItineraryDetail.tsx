@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
-import { AlertTriangle, ArrowDown, ArrowLeft, ArrowUp, Bot, Check, Clock, Cpu, History, Plus, RefreshCw, Save, Trash2, Wallet } from 'lucide-react';
+import { AlertTriangle, ArrowDown, ArrowLeft, ArrowUp, Bot, Check, Clock, Cpu, History, Lock, LockOpen, Plus, RefreshCw, Save, Trash2, Wallet } from 'lucide-react';
 import { toast } from 'sonner';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/components/ui/dialog';
@@ -10,6 +10,10 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Skeleton } from '@/components/ui/skeleton';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import ConfirmDialog from '@/components/admin/ConfirmDialog';
+import ContextPanel from '@/components/itinerary/ContextPanel';
+import ItineraryMap from '@/components/itinerary/ItineraryMap';
+import { dayColor } from '@/lib/mapColors';
+import OptimizationPanel from '@/components/itinerary/OptimizationPanel';
 import { EmptyState, ErrorState } from '@/components/QueryState';
 import { ApiError } from '@/lib/api/client';
 import { itinerariesApi, type Activity, type DayPlan, type Itinerary } from '@/lib/api/itineraries';
@@ -21,8 +25,8 @@ import { useDeleteItinerary, useItinerary, useItineraryMutation, useVersions } f
 const errMsg = (e: unknown) => (e instanceof ApiError ? e.message : 'Something went wrong. Please try again.');
 const HOURS_LABEL = { verified_open: 'Open (verified)', verified_closed: 'Closed (verified)', unknown: 'Opening hours not verified' } as const;
 
-function ActivityCard({ a, it, onRemove, onMove, onDuration, busy }: {
-  a: Activity; it: Itinerary; busy: boolean; onRemove: () => void; onMove: (dir: -1 | 1) => void; onDuration: (m: number) => void;
+function ActivityCard({ a, it, onRemove, onMove, onDuration, onLock, busy }: {
+  a: Activity; it: Itinerary; busy: boolean; onRemove: () => void; onMove: (dir: -1 | 1) => void; onDuration: (m: number) => void; onLock: () => void;
 }) {
   const day = it.day_plans[a.day_number - 1];
   return (
@@ -36,6 +40,7 @@ function ActivityCard({ a, it, onRemove, onMove, onDuration, busy }: {
         <div className="flex gap-1 shrink-0">
           <Button size="icon" variant="ghost" aria-label={`Move ${a.attraction.name} earlier`} disabled={busy || a.position === 1} onClick={() => onMove(-1)}><ArrowUp className="w-4 h-4" /></Button>
           <Button size="icon" variant="ghost" aria-label={`Move ${a.attraction.name} later`} disabled={busy || a.position === day.activities.length} onClick={() => onMove(1)}><ArrowDown className="w-4 h-4" /></Button>
+          <Button size="icon" variant="ghost" aria-label={a.locked ? `Unlock ${a.attraction.name}` : `Lock ${a.attraction.name} (keep in optimizations)`} aria-pressed={a.locked} disabled={busy} onClick={onLock}>{a.locked ? <Lock className="w-4 h-4 text-primary" /> : <LockOpen className="w-4 h-4" />}</Button>
           <Button size="icon" variant="ghost" aria-label={`Remove ${a.attraction.name}`} disabled={busy} onClick={onRemove}><Trash2 className="w-4 h-4 text-destructive" /></Button>
         </div>
       </div>
@@ -126,9 +131,10 @@ export default function ItineraryDetail() {
   const add = run((b: Parameters<typeof itinerariesApi.addActivity>[1]) => itinerariesApi.addActivity(id!, b));
   const remove = run((aid: string) => itinerariesApi.removeActivity(id!, aid));
   const patch = run((v: { aid: string; duration_min: number }) => itinerariesApi.updateActivity(id!, v.aid, { duration_min: v.duration_min }));
+  const lock = run((v: { aid: string; locked: boolean }) => itinerariesApi.updateActivity(id!, v.aid, { locked: v.locked }));
   const reorder = run((days: { day_number: number; activity_ids: string[] }[]) => itinerariesApi.reorder(id!, days));
   const restore = run((version: number) => itinerariesApi.restore(id!, version));
-  const busy = [update, regenerate, add, remove, patch, reorder, restore].some(m => m.isPending);
+  const busy = [update, regenerate, add, remove, patch, lock, reorder, restore].some(m => m.isPending);
   const done = (msg: string) => ({ onSuccess: () => toast.success(msg), onError: (e: unknown) => toast.error(errMsg(e)) });
 
   if (q.isLoading) return <div className="space-y-4" role="status" aria-label="Loading"><Skeleton className="h-10 w-72" /><Skeleton className="h-64 rounded-xl" /></div>;
@@ -204,11 +210,29 @@ export default function ItineraryDetail() {
             {d.activities.length === 0 && <EmptyState title="Nothing planned for this day" hint="Use “Add attraction” to fill it." />}
             <ol className="space-y-3">
               {d.activities.map(a => <ActivityCard key={a.id} a={a} it={it} busy={busy} onRemove={() => remove.mutate(a.id, done('Activity removed'))}
-                onMove={dir => moveWithin(d, a, dir)} onDuration={m => patch.mutate({ aid: a.id, duration_min: m }, done('Visit length updated'))} />)}
+                onMove={dir => moveWithin(d, a, dir)} onDuration={m => patch.mutate({ aid: a.id, duration_min: m }, done('Visit length updated'))} onLock={() => lock.mutate({ aid: a.id, locked: !a.locked }, done(a.locked ? 'Activity unlocked' : 'Activity locked: optimizations will keep it'))} />)}
             </ol>
             {d.activities.length > 0 && <p className="text-xs text-muted-foreground">Lunch is scheduled around {d.lunch_start_min == null ? '13:00' : `${String(Math.floor(d.lunch_start_min / 60)).padStart(2, '0')}:${String(d.lunch_start_min % 60).padStart(2, '0')}`} · day ends at {d.ends_at}</p>}
           </TabsContent>
         ))}
+      </Tabs>
+
+      <Tabs defaultValue="map">
+        <TabsList>
+          <TabsTrigger value="map">Map</TabsTrigger>
+          <TabsTrigger value="optimize">Optimize route</TabsTrigger>
+          <TabsTrigger value="conditions">Conditions</TabsTrigger>
+        </TabsList>
+        <TabsContent value="map" className="mt-4 space-y-2">
+          {it.day_plans.some(d => d.activities.length > 0)
+            ? <ItineraryMap start={it.start_location ?? { name: `${it.destination.name} centre`, lat: it.destination.latitude, lng: it.destination.longitude }}
+                routes={it.day_plans.filter(d => d.activities.length).map(d => ({ key: `d${d.day_number}`, color: dayColor(d.day_number), title: `Day ${d.day_number}`,
+                  stops: d.activities.map(a => ({ id: a.id, name: a.attraction.name, lat: a.attraction.latitude, lng: a.attraction.longitude })) }))} />
+            : <EmptyState title="Nothing to show on the map" hint="Add activities to see the route." />}
+          <p className="text-xs text-muted-foreground">Lines join stops in visiting order; they are not road routes. Travel times: {(it.generation_info.routing as { source?: string } | undefined)?.source ?? 'estimate'}.</p>
+        </TabsContent>
+        <TabsContent value="optimize" className="mt-4"><OptimizationPanel it={it} /></TabsContent>
+        <TabsContent value="conditions" className="mt-4"><ContextPanel it={it} /></TabsContent>
       </Tabs>
 
       <section aria-label="Version history" className="bg-card rounded-xl border border-border/50 shadow-card p-4 space-y-2">

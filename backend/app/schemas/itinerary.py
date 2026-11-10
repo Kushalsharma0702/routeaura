@@ -73,6 +73,7 @@ class AddActivity(BaseModel):
 class UpdateActivity(BaseModel):
     duration_min: int | None = Field(default=None, ge=5, le=1440)
     notes: str | None = Field(default=None, max_length=500)
+    locked: bool | None = None
 
 
 class DayOrder(BaseModel):
@@ -106,6 +107,7 @@ class ActivityOut(BaseModel):
     travel_min: int
     travel_m: int
     travel_source: str = "estimate"
+    locked: bool = False
     wait_min: int
     cost_minor: int | None
     cost_total_minor: int | None

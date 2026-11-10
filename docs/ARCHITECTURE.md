@@ -113,3 +113,19 @@ POST /itineraries/generate-> ItineraryService
 * Tables added: `user_interactions`, `recommendation_runs`, `recommendation_items`, `recommendation_feedback` (0004); `itineraries`, `itinerary_activities`, `itinerary_versions` (0005). Preference snapshots live in `recommendation_runs.preferences`.
 * Ownership is enforced in the service layer for every itinerary/run/impression/feedback access.
 * Travel times are estimates (great-circle x 1.3 / 30 km/h) and labelled as such; routing providers are the next wave.
+
+
+## 10. Routing and context layer (Wave 2)
+```
+ItineraryService._reschedule  -> RoutingProvider.matrix(points)   (estimate | osrm | resilient fallback)  -> legs stored on activities
+POST /itineraries/{id}/optimize -> OptimizationService: matrix -> OR-Tools (day assignment + order, windows, lunch, budget, locked)
+                                   -> re-evaluate with planner (authoritative) -> persist OptimizationRun (preview) -> explicit apply
+POST /itineraries/{id}/adapt    -> ContextService: fresh weather snapshots + verified hours + traveler reports
+                                   -> context.engine (pure): detect -> alternatives -> feasibility-aware pick -> simulate
+                                   -> pending AdaptationProposal -> traveler approves/rejects -> new itinerary version
+```
+* `modules/routing/graph.py`: Dijkstra and A* (tested against NetworkX); `optimizer.py`: OR-Tools; `explain.py`: pure change explanations; `service.py`: persistence/approval. Graph pathfinding and TSP-style ordering are separate problems and neither is real road routing: road times come from a provider or are labelled estimates.
+* Providers sit behind interfaces (`integrations/routing`, `integrations/weather`); defaults are `estimate` and `none`. OSRM and Open-Meteo adapters are verified only against mocked HTTP responses, **never against the live services**.
+* Tables (0006): `optimization_runs`, `context_snapshots`, `adaptation_proposals`, plus `itinerary_activities.locked`.
+* Freshness: weather older than `WEATHER_MAX_AGE_MINUTES` (default 180) is reported as stale and never acted on.
+* Known OR-Tools quirk: the `SetAllowedVehiclesForIndex` binding is broken in 9.15, so day restrictions use `VehicleVar(...).RemoveValue(...)`.

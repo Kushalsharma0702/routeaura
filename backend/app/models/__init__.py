@@ -1,5 +1,6 @@
 from app.models.catalog import Attraction, AttractionCategory, Destination, destination_categories
 from app.models.itinerary import Itinerary, ItineraryActivity, ItineraryVersion
+from app.models.optimization import AdaptationProposal, ContextSnapshot, OptimizationRun
 from app.models.recommendations import (
     RecommendationFeedback,
     RecommendationItem,
@@ -9,6 +10,7 @@ from app.models.recommendations import (
 from app.models.user import AuditLog, RefreshToken, Role, User, UserPreference
 
 __all__ = [
+    "AdaptationProposal", "ContextSnapshot", "OptimizationRun",
     "Itinerary", "ItineraryActivity", "ItineraryVersion",
     "RecommendationFeedback", "RecommendationItem", "RecommendationRun", "UserInteraction",
     "Attraction", "AttractionCategory", "AuditLog", "Destination", "RefreshToken", "Role",

@@ -8,6 +8,7 @@ import Itineraries from '@/pages/client/Itineraries';
 import ItineraryDetail from '@/pages/client/ItineraryDetail';
 import { PREFS, VERSIONS, apiError, makeAttraction, makeDest, makeItinerary, mockApi, page, renderRoute } from './utils';
 
+vi.mock('@/components/itinerary/ItineraryMap', () => ({ default: () => <div data-testid="map" /> }));
 vi.mock('sonner', () => ({ toast: Object.assign(vi.fn(), { success: vi.fn(), error: vi.fn() }) }));
 beforeEach(() => vi.clearAllMocks());
 afterEach(() => vi.unstubAllGlobals());

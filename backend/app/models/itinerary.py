@@ -2,6 +2,7 @@ import uuid
 from datetime import date, datetime
 
 from sqlalchemy import (
+    Boolean,
     CheckConstraint,
     Date,
     DateTime,
@@ -86,6 +87,7 @@ class ItineraryActivity(UUIDPk, Timestamps, Base):
     score: Mapped[float | None] = mapped_column(Float)
     explanation: Mapped[dict] = mapped_column(JSONB, default=dict)  # reasons, notes, llm rationale
     notes: Mapped[str | None] = mapped_column(Text)
+    locked: Mapped[bool] = mapped_column(Boolean, default=False, server_default="false")   # required: never dropped
 
     itinerary: Mapped[Itinerary] = relationship(back_populates="activities")
     attraction = relationship("Attraction", lazy="joined")

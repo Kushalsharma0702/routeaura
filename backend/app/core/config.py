@@ -31,6 +31,13 @@ class Settings(BaseSettings):
     llm_model: str = "claude-sonnet-5-5"
     llm_timeout_s: float = 30.0
 
+    # Routing / weather providers (optional; deterministic estimates are used when unset)
+    routing_provider: Literal["none", "osrm"] = "none"
+    osrm_base_url: str | None = None
+    weather_provider: Literal["none", "open-meteo"] = "none"
+    weather_base_url: str = "https://api.open-meteo.com"
+    weather_max_age_minutes: int = 180
+
     # Spatial queries: 'auto' uses PostGIS when installed, else the portable haversine backend
     spatial_backend: Literal["auto", "postgis", "haversine"] = "auto"
 

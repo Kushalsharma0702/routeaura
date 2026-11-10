@@ -99,3 +99,28 @@ Response items: `recommendation_item_id`, `rank`, `original_rank`, `score` (rele
 
 `Itinerary` includes `day_plans[].activities[]` (start/end time, `duration_min`, `travel_min`/`travel_m` with `travel_source: "estimate"`, `cost_minor` per person or null when unknown, `hours_status` `verified_open|verified_closed|unknown`, `warnings`, `explanation`), `budget` (known costs only, living estimate, deviation, `unknown_cost_items`), `violations[]` (`day_overrun|opening_hours|max_per_day|budget`), `generation_source` (`llm|deterministic_fallback`) and `generation_info` (notes, per-step timings, LLM provider/model/error, dropped attractions).
 Generation: the LLM (when `LLM_PROVIDER` and `LLM_API_KEY` are set) may only interpret a free-text `prompt` and propose day groupings from the supplied attraction ids; output is Pydantic-validated (one retry), then scheduled and checked by deterministic code. Any failure falls back to the deterministic planner and says so. Times, costs and constraints are never taken from the model.
+
+
+## Route optimization (Wave 2; authenticated, owner-scoped, other users get 404)
+| Method | Path | Notes |
+|---|---|---|
+| POST | `/itineraries/{id}/optimize` | body `{weights?: {distance,time,cost,preference,taxi_rupees_per_km}, improve?: bool, time_limit_ms?: 200-10000}` -> 201 `Optimization` **preview**; nothing changes |
+| GET | `/itineraries/{id}/optimizations`, `/optimizations/{run_id}` | history / one run |
+| POST | `/optimizations/{run_id}/apply` | applies the previewed plan as a new version; 409 `stale_optimization` if the itinerary changed since, `already_applied`, `nothing_to_apply` (infeasible) |
+| PATCH | `/itineraries/{id}/activities/{aid}` | now also accepts `locked: bool` (locked and user-added activities are never dropped by the optimizer) |
+
+`Optimization`: `status` (`optimized|relaxed|infeasible`), `before` / `after` (`days[].stops[]` + `metrics`: distance, travel minutes, wait, violations, budget), `delta`, `changes[]` (plain-language explanation), `dropped[]` (with reasons), `routing` (`source`, `notes`, `live_traffic`, `fetched_at`), `weights`, `solver_ms`. `relaxed` means no plan satisfied every constraint, so opening hours and lunch were ignored and the remaining violations are listed; `infeasible` leaves the itinerary unchanged and explains why.
+Objective: `Z = alpha*distance_km + beta*travel_min + gamma*travel_cost_rupees + delta*preference_penalty` (see `modules/routing/optimizer.py`). Travel data comes from the configured routing provider (`ROUTING_PROVIDER=osrm`, `OSRM_BASE_URL`) or, by default, the labelled great-circle estimate; saved itineraries record the source in `generation_info.routing` and every activity returns `travel_source`.
+
+## Context adaptation (Wave 2)
+| Method | Path | Notes |
+|---|---|---|
+| GET | `/itineraries/{id}/context` | provider status, weather snapshots (source, age, `fresh`), traveler reports, notes |
+| POST | `/itineraries/{id}/context/refresh` | fetch weather from the configured provider. 409 `provider_not_configured`, 422 `dates_required`, 502 `provider_error`; nothing is simulated |
+| POST | `/itineraries/{id}/context/report` | `{type: closure, activity_id}`, `{type: delay, day_number, current_time_min, completed_activity_ids}`, `{type: spent, spent_minor}`; stored as `user_reported` |
+| POST | `/itineraries/{id}/adapt` | detects issues from FRESH context and creates **pending** proposals (deduplicated); returns `issues`, `proposals`, `unresolved`, `stale_days`, `notes` |
+| GET | `/itineraries/{id}/adaptations`, `/adaptations/{pid}` | proposal history |
+| POST | `/adaptations/{pid}/approve` | applies the change as a new version (409 `stale_proposal` if the itinerary changed; the proposal becomes `superseded`) |
+| POST | `/adaptations/{pid}/reject` | marks it rejected; the itinerary is untouched |
+
+Issue types: `rain`, `heat` (outdoor activities only, from fresh provider forecasts), `closure` (admin-verified weekly hours with trip dates, or traveler-reported), `delay`, `over_budget` (traveler-reported). Alternatives are published attractions of the same destination, never verified-closed, ranked by category, relevance and proximity and chosen to minimise new schedule violations; a proposal's `preview` shows before/after and any remaining violations. Approval is required for every change.
