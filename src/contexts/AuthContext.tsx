@@ -1,80 +1,92 @@
 /**
- * Authentication Context
- * Manages user login state and provides authentication methods throughout the app
- * 
- * Demo Credentials:
- * Admin: admin@routeaura.com / Admin@123
- * Client: client@routeaura.com / Client@123
+ * Authentication context backed by the RouteAura API.
+ * The session is restored on load from the HttpOnly refresh cookie; nothing sensitive
+ * is kept in localStorage. Authorization is enforced by the server; the `role` here
+ * only decides which UI to show.
  */
-import React, { createContext, useContext, useState, useCallback } from 'react';
-import { User, demoUsers } from '@/data/mockData';
+import React, { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react';
+import { authApi, type RegisterInput } from '@/lib/api/auth';
+import { ApiError, setSessionExpiredHandler, type ApiUser } from '@/lib/api/client';
 
-// Type definition for authentication context
+export interface AuthUser {
+  id: string;
+  name: string;
+  email: string;
+  phone?: string;
+  role: 'admin' | 'client'; // backend "traveler" is presented as "client" in the UI
+  joinedDate: string;
+}
+
+export function toAuthUser(u: ApiUser): AuthUser {
+  return {
+    id: u.id,
+    name: u.full_name,
+    email: u.email,
+    phone: u.phone ?? undefined,
+    role: u.role === 'admin' ? 'admin' : 'client',
+    joinedDate: u.created_at.slice(0, 10),
+  };
+}
+
 interface AuthContextType {
-  user: User | null;  // Currently logged-in user (null if not logged in)
-  login: (email: string, password: string) => Promise<boolean>;  // Login function
-  logout: () => void;  // Logout function
-  isAuthenticated: boolean;  // Quick check if user is logged in
+  user: AuthUser | null;
+  isAuthenticated: boolean;
+  isLoading: boolean;
+  /** Resolves to null on success, or a user-facing error message. */
+  login: (email: string, password: string) => Promise<string | null>;
+  register: (input: RegisterInput) => Promise<string | null>;
+  logout: () => Promise<void>;
+  setUser: (u: AuthUser) => void;
 }
 
 const AuthContext = createContext<AuthContextType | null>(null);
 
-// Demo credentials for testing the application
-// In a real app, this would be handled by a backend API
-const DEMO_CREDENTIALS: Record<string, string> = {
-  'admin@routeaura.com': 'Admin@123',
-  'client@routeaura.com': 'Client@123',
-};
-
-/**
- * AuthProvider Component
- * Wraps the app and provides authentication state to all child components
- */
-export function AuthProvider({ children }: { children: React.ReactNode }) {
-  // Initialize user state from localStorage (persists across page refreshes)
-  const [user, setUser] = useState<User | null>(() => {
-    const saved = localStorage.getItem('routeaura_user');
-    return saved ? JSON.parse(saved) : null;
-  });
-
-  /**
-   * Login function - validates credentials and updates state
-   * In production, this would call an API endpoint
-   */
-  const login = useCallback(async (email: string, password: string) => {
-    // Check if credentials match our demo credentials
-    if (DEMO_CREDENTIALS[email] && DEMO_CREDENTIALS[email] === password) {
-      const foundUser = demoUsers.find(u => u.email === email);
-      if (foundUser) {
-        setUser(foundUser);
-        // Save to localStorage so user stays logged in after refresh
-        localStorage.setItem('routeaura_user', JSON.stringify(foundUser));
-        return true;
-      }
+function messageFor(err: unknown): string {
+  if (err instanceof ApiError) {
+    if (err.code === 'validation_error' && Array.isArray(err.details) && err.details[0]) {
+      return String(err.details[0].message).replace(/^Value error, /, '');
     }
-    return false;  // Login failed
-  }, []);
-
-  /**
-   * Logout function - clears user state and localStorage
-   */
-  const logout = useCallback(() => {
-    setUser(null);
-    localStorage.removeItem('routeaura_user');
-  }, []);
-
-  return (
-    <AuthContext.Provider value={{ user, login, logout, isAuthenticated: !!user }}>
-      {children}
-    </AuthContext.Provider>
-  );
+    return err.message;
+  }
+  return 'Cannot reach the server. Please try again.';
 }
 
-/**
- * useAuth Hook
- * Custom hook to access authentication context in any component
- * Must be used within AuthProvider
- */
+export function AuthProvider({ children }: { children: React.ReactNode }) {
+  const [user, setUser] = useState<AuthUser | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    let active = true;
+    authApi.restore().then(u => {
+      if (active) { setUser(u ? toAuthUser(u) : null); setIsLoading(false); }
+    });
+    setSessionExpiredHandler(() => setUser(null));
+    return () => { active = false; setSessionExpiredHandler(null); };
+  }, []);
+
+  const login = useCallback(async (email: string, password: string) => {
+    try { setUser(toAuthUser(await authApi.login(email, password))); return null; }
+    catch (e) { return messageFor(e); }
+  }, []);
+
+  const register = useCallback(async (input: RegisterInput) => {
+    try { setUser(toAuthUser(await authApi.register(input))); return null; }
+    catch (e) { return messageFor(e); }
+  }, []);
+
+  const logout = useCallback(async () => {
+    try { await authApi.logout(); } catch { /* session is cleared locally regardless */ }
+    setUser(null);
+  }, []);
+
+  const value = useMemo(
+    () => ({ user, isAuthenticated: !!user, isLoading, login, register, logout, setUser }),
+    [user, isLoading, login, register, logout],
+  );
+  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
+}
+
+// eslint-disable-next-line react-refresh/only-export-components
 export function useAuth() {
   const ctx = useContext(AuthContext);
   if (!ctx) throw new Error('useAuth must be used within AuthProvider');

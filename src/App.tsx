@@ -60,9 +60,20 @@ const queryClient = new QueryClient({
  * Redirects unauthenticated users to login page
  * Redirects users without proper role to home page
  */
+function FullPageSpinner() {
+  return (
+    <div className="min-h-screen flex items-center justify-center" role="status" aria-label="Loading">
+      <div className="h-8 w-8 rounded-full border-2 border-primary border-t-transparent animate-spin" />
+    </div>
+  );
+}
+
 function ProtectedRoute({ children, role }: { children: React.ReactNode; role: 'admin' | 'client' }) {
-  const { isAuthenticated, user } = useAuth();
-  
+  const { isAuthenticated, user, isLoading } = useAuth();
+
+  // Wait for the session restore (refresh cookie) before deciding
+  if (isLoading) return <FullPageSpinner />;
+
   // If user is not logged in, send them to login page
   if (!isAuthenticated) return <Navigate to="/login" replace />;
   

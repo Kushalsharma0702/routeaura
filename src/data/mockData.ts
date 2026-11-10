@@ -1,5 +1,5 @@
 /**
- * Mock Data for Escapade Central
+ * Mock Data for RouteAura
  * 
  * This file contains all the sample data used in the application for demonstration
  * In a production app, this would be replaced with API calls to a backend server

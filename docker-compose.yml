@@ -1,0 +1,45 @@
+# docker compose up --build   (requires a root .env: see .env.example)
+services:
+  db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_DB: routeaura
+      POSTGRES_USER: routeaura
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?set POSTGRES_PASSWORD in .env}
+    volumes: [pgdata:/var/lib/postgresql/data]
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U routeaura -d routeaura"]
+      interval: 5s
+      retries: 10
+
+  redis:
+    image: redis:7-alpine
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      retries: 10
+
+  backend:
+    build: ./backend
+    environment:
+      ENVIRONMENT: ${ENVIRONMENT:-development}
+      DATABASE_URL: postgresql+psycopg://routeaura:${POSTGRES_PASSWORD}@db:5432/routeaura
+      REDIS_URL: redis://redis:6379/0
+      JWT_SECRET: ${JWT_SECRET:?set JWT_SECRET in .env}
+      CORS_ORIGINS: http://localhost:8080
+      SEED_ADMIN_EMAIL: ${SEED_ADMIN_EMAIL:-}
+      SEED_ADMIN_PASSWORD: ${SEED_ADMIN_PASSWORD:-}
+      SEED_TRAVELER_EMAIL: ${SEED_TRAVELER_EMAIL:-}
+      SEED_TRAVELER_PASSWORD: ${SEED_TRAVELER_PASSWORD:-}
+    depends_on:
+      db: { condition: service_healthy }
+      redis: { condition: service_healthy }
+    ports: ["8000:8000"]
+
+  frontend:
+    build: .
+    depends_on: [backend]
+    ports: ["8080:80"]
+
+volumes:
+  pgdata:

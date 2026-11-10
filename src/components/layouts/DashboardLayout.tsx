@@ -59,8 +59,8 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
   const navItems = user?.role === 'admin' ? adminNav : clientNav;
 
   // Handle user logout and redirect to login page
-  const handleLogout = () => {
-    logout();
+  const handleLogout = async () => {
+    await logout();
     navigate('/login');
   };
 

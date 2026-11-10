@@ -10,7 +10,9 @@ import { Navigate } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
 
 const Index = () => {
-  const { isAuthenticated, user } = useAuth();
+  const { isAuthenticated, user, isLoading } = useAuth();
+
+  if (isLoading) return null;
 
   // If user is logged in, send them to their appropriate dashboard
   if (isAuthenticated) {

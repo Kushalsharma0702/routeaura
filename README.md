@@ -48,7 +48,7 @@ A modern travel and tour management system built with React and TypeScript. This
 - **Animations:** Framer Motion
 - **Icons:** Lucide React
 - **Testing:** Vitest
-- **Package Manager:** Bun
+- **Package Manager:** npm
 
 ---
 
@@ -57,7 +57,7 @@ A modern travel and tour management system built with React and TypeScript. This
 ### Prerequisites
 Make sure you have the following installed:
 - Node.js (v18 or higher)
-- Bun (or npm/yarn/pnpm)
+- npm (ships with Node.js)
 
 ### Steps to Run Locally
 
@@ -69,7 +69,7 @@ Make sure you have the following installed:
 
 2. **Install dependencies**
    ```bash
-   bun install
+   npm ci
    ```
    
    Or if you're using npm:
@@ -79,7 +79,7 @@ Make sure you have the following installed:
 
 3. **Start the development server**
    ```bash
-   bun run dev
+   npm run dev
    ```
    
    Or with npm:
@@ -94,12 +94,12 @@ Make sure you have the following installed:
 
 ## 🚀 Available Scripts
 
-- `bun run dev` - Start development server
-- `bun run build` - Build for production
-- `bun run preview` - Preview production build
-- `bun run lint` - Run ESLint
-- `bun run test` - Run tests once
-- `bun run test:watch` - Run tests in watch mode
+- `npm run dev` - Start development server
+- `npm run build` - Build for production
+- `npm run preview` - Preview production build
+- `npm run lint` - Run ESLint
+- `npm run test` - Run tests once
+- `npm run test:watch` - Run tests in watch mode
 
 ---
 
@@ -194,3 +194,29 @@ For any queries regarding this project, please reach out to any of the team memb
 ---
 
 **Made with ❤️ by Team Aurocode**
+
+---
+
+## 🚀 Running the full stack (frontend + API + PostgreSQL)
+
+Prerequisites: Node 20+, [uv](https://docs.astral.sh/uv/), PostgreSQL 14+.
+
+```bash
+# 1. Backend
+cd backend
+createdb routeaura && createdb routeaura_test
+cp .env.example .env            # then set JWT_SECRET (see comment inside)
+uv sync
+uv run alembic upgrade head
+uv run python -m app.scripts.seed_dev   # dev-only seed accounts
+uv run uvicorn app.main:app --reload --port 8000   # API docs: http://localhost:8000/docs
+
+# 2. Frontend (new terminal, repo root)
+npm ci
+npm run dev                     # http://localhost:8080 (proxies /api to :8000)
+```
+
+Tests: `cd backend && uv run pytest -q` and `npm test`.
+Docker: copy `.env.example` to `.env`, fill the secrets, then `docker compose up --build` (not yet verified end to end, see `docs/IMPLEMENTATION_STATUS.md`).
+
+Project documentation lives in [`docs/`](docs/): audit, architecture, plan, decisions and current status.

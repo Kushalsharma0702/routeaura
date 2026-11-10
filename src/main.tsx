@@ -1,5 +1,5 @@
 /**
- * Main entry point for the Escapade Central application
+ * Main entry point for the RouteAura application
  * This file initializes the React app and mounts it to the DOM
  */
 import { createRoot } from "react-dom/client";
