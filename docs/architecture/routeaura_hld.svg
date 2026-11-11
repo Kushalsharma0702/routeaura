@@ -1,0 +1,91 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1240 900" width="1240" height="900" font-family="Helvetica, Arial, sans-serif">
+  <defs>
+    <marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#475569"/></marker>
+    <style>
+      .t{font-size:13px;fill:#0f172a}.s{font-size:11px;fill:#475569}.h{font-size:15px;font-weight:700;fill:#0f172a}
+      .lay{fill:#f8fafc;stroke:#cbd5e1;stroke-width:1.2}.lab{font-size:12px;font-weight:700;fill:#64748b;letter-spacing:.08em}
+      .box{stroke-width:1.4;rx:8}.b1{fill:#dbeafe;stroke:#2563eb}.b2{fill:#dcfce7;stroke:#16a34a}
+      .b3{fill:#fef3c7;stroke:#d97706}.b4{fill:#ede9fe;stroke:#7c3aed}.b5{fill:#fee2e2;stroke:#dc2626}.b6{fill:#e2e8f0;stroke:#64748b}
+      .ln{stroke:#475569;stroke-width:1.5;fill:none}.dash{stroke-dasharray:6 4}
+    </style>
+  </defs>
+  <rect width="1240" height="900" fill="#ffffff"/>
+  <text x="620" y="30" text-anchor="middle" class="h" style="font-size:20px">RouteAura: High-Level Design</text>
+  <text x="620" y="50" text-anchor="middle" class="s">Modular monolith · deterministic algorithms first · every external provider behind an interface with a labelled fallback</text>
+
+  <!-- Presentation -->
+  <rect class="lay" x="20" y="66" width="1200" height="128" rx="10"/><text class="lab" x="34" y="86">PRESENTATION  (React 18 · Vite · TypeScript · Tailwind/shadcn · TanStack Query · Leaflet)</text>
+  <rect class="box b1" x="40" y="98" width="560" height="84"/>
+  <text class="h" x="54" y="118">Traveler (client) app</text>
+  <text class="t" x="54" y="138">Destinations · Recommendations · Planner &amp; Itineraries · Map</text>
+  <text class="t" x="54" y="156">Hotels &amp; Booking/Payment · Assistant (text + voice) · Notifications</text>
+  <text class="s" x="54" y="173">Browser Web Speech API = client-side voice fallback</text>
+  <rect class="box b1" x="640" y="98" width="560" height="84"/>
+  <text class="h" x="654" y="118">Admin (hotel / operations) app</text>
+  <text class="t" x="654" y="138">Destinations · Attractions · Hotels, rooms, per-night inventory</text>
+  <text class="t" x="654" y="156">Bookings (cancel + refund) · Users · Dashboard</text>
+  <text class="s" x="654" y="173">Role-gated routes; the server re-checks every call</text>
+
+  <path class="ln" d="M320,182 L320,226" marker-end="url(#a)"/><path class="ln" d="M920,182 L920,226" marker-end="url(#a)"/>
+  <text class="s" x="330" y="210">/api/v1 JSON · JWT access token (memory) + HttpOnly rotating refresh cookie</text>
+
+  <!-- API -->
+  <rect class="lay" x="20" y="228" width="1200" height="52" rx="10"/><text class="lab" x="34" y="246">API EDGE (FastAPI)</text>
+  <text class="t" x="34" y="268">CORS allow-list · request-size limit · auth rate limit · JWT validation · RBAC (traveler | admin) · ownership checks · audit log · error envelope (no stack traces)</text>
+
+  <path class="ln" d="M620,280 L620,300" marker-end="url(#a)"/>
+
+  <!-- Domain -->
+  <rect class="lay" x="20" y="302" width="1200" height="270" rx="10"/><text class="lab" x="34" y="322">DOMAIN MODULES  (router → service → repository → ORM; engines are pure functions with no DB/framework imports)</text>
+
+  <rect class="box b2" x="40" y="334" width="280" height="108"/>
+  <text class="h" x="52" y="354">Auth &amp; Users</text><text class="s" x="52" y="372">Argon2id · JWT · token-family</text><text class="s" x="52" y="386">rotation / theft detection</text><text class="s" x="52" y="400">preferences · roles</text>
+  <rect class="box b2" x="335" y="334" width="280" height="108"/>
+  <text class="h" x="347" y="354">Catalog &amp; Spatial</text><text class="s" x="347" y="372">destinations · attractions · categories</text><text class="s" x="347" y="386">haversine / optional PostGIS search</text><text class="s" x="347" y="400">unknown data stays unknown</text>
+  <rect class="box b3" x="630" y="334" width="280" height="108"/>
+  <text class="h" x="642" y="354">Recommendation engine</text><text class="s" x="642" y="372">score = Σ w·v / Σ w (lower-bound)</text><text class="s" x="642" y="386">cosine interest · budget · season · …</text><text class="s" x="642" y="400">MMR diversity · explanations</text>
+  <rect class="box b3" x="925" y="334" width="275" height="108"/>
+  <text class="h" x="937" y="354">Itinerary planner</text><text class="s" x="937" y="368">greedy select → nearest-neighbour</text><text class="s" x="937" y="382">→ first-fit day packing → schedule</text><text class="s" x="937" y="396">→ validate · versions · LLM optional</text>
+
+  <rect class="box b3" x="40" y="456" width="280" height="102"/>
+  <text class="h" x="52" y="476">Route optimizer</text><text class="s" x="52" y="494">OR-Tools VRP: min αD+βT+γC+δP</text><text class="s" x="52" y="508">windows · lunch · locked · budget</text><text class="s" x="52" y="522">Dijkstra / A* (graph module)</text>
+  <rect class="box b3" x="335" y="456" width="280" height="102"/>
+  <text class="h" x="347" y="476">Context adaptation</text><text class="s" x="347" y="494">fresh weather · verified closures</text><text class="s" x="347" y="508">alternatives → simulate → proposal</text><text class="s" x="347" y="522">applied only with traveler approval</text>
+  <rect class="box b4" x="630" y="456" width="280" height="102"/>
+  <text class="h" x="642" y="476">Hotels &amp; Bookings</text><text class="s" x="642" y="494">ordered row locks · CHECK booked ≤ total</text><text class="s" x="642" y="508">idempotency key · 15-min hold</text><text class="s" x="642" y="522">pay / cancel · refund policy</text>
+  <rect class="box b4" x="925" y="456" width="275" height="102"/>
+  <text class="h" x="937" y="476">Assistant &amp; Notifications</text><text class="s" x="937" y="494">rule-based en/hi NLU → same services</text><text class="s" x="937" y="508">confirm before edits · cannot pay/cancel</text><text class="s" x="937" y="522">idempotent in-app + optional email</text>
+
+  <path class="ln" d="M620,572 L620,598" marker-end="url(#a)"/>
+
+  <!-- Data + providers + workers -->
+  <rect class="lay" x="20" y="600" width="390" height="150" rx="10"/><text class="lab" x="34" y="620">DATA</text>
+  <rect class="box b6" x="40" y="632" width="350" height="104"/>
+  <text class="h" x="52" y="652">PostgreSQL (source of truth)</text><text class="s" x="52" y="670">Alembic 0001–0007 · UUID PKs · money in minor units</text><text class="s" x="52" y="684">users · catalog · interactions · recs · itineraries</text><text class="s" x="52" y="698">optimization · context · hotels · inventory · bookings</text><text class="s" x="52" y="712">payments · notifications · assistant · audit</text>
+
+  <rect class="lay" x="425" y="600" width="520" height="150" rx="10"/><text class="lab" x="439" y="620">PROVIDERS  (interface + labelled fallback; adapters tested on mocked HTTP only)</text>
+  <rect class="box b5 dash" x="445" y="632" width="150" height="46"/><text class="t" x="455" y="652">LLM</text><text class="s" x="455" y="668">NoLLM (default) | Anthropic</text>
+  <rect class="box b5 dash" x="605" y="632" width="150" height="46"/><text class="t" x="615" y="652">Routing</text><text class="s" x="615" y="668">estimate (default) | OSRM</text>
+  <rect class="box b5 dash" x="765" y="632" width="160" height="46"/><text class="t" x="775" y="652">Weather</text><text class="s" x="775" y="668">none (default) | Open-Meteo</text>
+  <rect class="box b5 dash" x="445" y="688" width="150" height="46"/><text class="t" x="455" y="708">Speech</text><text class="s" x="455" y="724">none | Sarvam | Azure</text>
+  <rect class="box b5 dash" x="605" y="688" width="150" height="46"/><text class="t" x="615" y="708">Payments</text><text class="s" x="615" y="724">dev simulator only</text>
+  <rect class="box b5 dash" x="765" y="688" width="160" height="46"/><text class="t" x="775" y="708">Email</text><text class="s" x="775" y="724">none | SMTP</text>
+
+  <rect class="lay" x="960" y="600" width="260" height="150" rx="10"/><text class="lab" x="974" y="620">BACKGROUND WORKERS</text>
+  <rect class="box b6" x="978" y="632" width="224" height="104"/>
+  <text class="s" x="990" y="654">expire_holds (release stock)</text><text class="s" x="990" y="672">trip_reminders</text><text class="s" x="990" y="690">weather_alerts</text><text class="s" x="990" y="708">deliver_notifications (retry)</text><text class="s" x="990" y="726">single runner: advisory lock</text>
+
+  <path class="ln" d="M410,676 L425,676" marker-end="url(#a)"/>
+  <path class="ln" d="M945,676 L960,676" marker-end="url(#a)"/>
+
+  <!-- Evaluation + legend -->
+  <rect class="lay" x="20" y="764" width="1200" height="118" rx="10"/><text class="lab" x="34" y="784">OFFLINE RESEARCH EVALUATION  (SYNTHETIC, seeded, reproducible; no user study)</text>
+  <text class="t" x="34" y="808">Recommendations: P@K · R@K · NDCG@K · diversity · coverage vs random / popularity / cosine / weighted / MMR (paired bootstrap 95% CI)</text>
+  <text class="t" x="34" y="828">Itineraries: violation rate · utility · budget deviation vs simple order / nearest neighbour / validated planner</text>
+  <text class="t" x="34" y="848">Routing &amp; context: optimizer and adaptation benchmarks on generated trips · see docs/research/ROUTING_CONTEXT_EVALUATION.md</text>
+  <rect x="34" y="860" width="14" height="12" class="b1 box"/><text class="s" x="54" y="870">UI</text>
+  <rect x="84" y="860" width="14" height="12" class="b2 box"/><text class="s" x="104" y="870">platform</text>
+  <rect x="164" y="860" width="14" height="12" class="b3 box"/><text class="s" x="184" y="870">algorithmic core</text>
+  <rect x="284" y="860" width="14" height="12" class="b4 box"/><text class="s" x="304" y="870">transactional</text>
+  <rect x="384" y="860" width="14" height="12" class="b5 box dash"/><text class="s" x="404" y="870">external / unverified live (dashed)</text>
+</svg>
